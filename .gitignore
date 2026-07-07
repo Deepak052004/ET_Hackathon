@@ -1,0 +1,27 @@
+ET_Hackathon_Implementation_Plan.html
+ET_Hackathon_Work_Division.html
+ET_Hackathon_Implementation_Plan.html.txt
+ET_Hackathon_Work_Division.html.txt
+extract_text.py
+update.py
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# Docker
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Models (large files)
+backend/data/models/
+*.pt
+*.onnx
