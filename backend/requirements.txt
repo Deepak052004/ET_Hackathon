@@ -22,9 +22,9 @@ langchain-community
 chromadb==0.5.3
 sentence-transformers==3.0.1
 ultralytics==8.2.48
-scikit-learn==1.5.0
-numpy==1.26.4
-pandas==2.2.2
+scikit-learn
+numpy
+pandas
 
 # Neo4j
 neo4j==5.21.0
@@ -35,5 +35,5 @@ Faker==25.3.0
 # Utilities
 python-multipart==0.0.9
 aiofiles==23.2.1
-Pillow==10.3.0
-opencv-python-headless==4.10.0.82
+Pillow
+opencv-python-headless
