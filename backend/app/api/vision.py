@@ -8,7 +8,9 @@ from app.models.alert import Alert, AlertSeverity, AlertSource, AlertStatus
 from app.models.zone import Zone
 
 router = APIRouter(prefix="/api/vision", tags=["vision"])
-
+def get_current_timestamp():
+    """Returns the current UTC timestamp as a formatted string."""
+    return datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
 CCTV_CAMERAS = [
     {"id": "CAM-01", "name": "Blast Furnace Entrance", "zone_id": 1, "status": "active"},
     {"id": "CAM-02", "name": "Hot Strip Mill Floor", "zone_id": 2, "status": "active"},
