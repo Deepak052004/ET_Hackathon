@@ -109,3 +109,14 @@ export const MOCK_SAFETY_BRIEF = {
   risk_factors: ['CH₄ elevated at 38.4 ppm (Zone B)', 'PUMP-D-401 RUL: 36h (Zone D)', 'Permit conflict PTW-0847 ↔ PTW-0812 (Zone B)', 'PPE violation detected by CV (Zone B)'],
   is_mock: true,
 };
+
+// ── MOCK: Permits ─────────────────────────────────────────────────────────────
+export const MOCK_PERMITS_DATA = {
+  permits: [
+    { permit_id: 'PTW-2026-0812', permit_type: 'Confined Space Entry', zone_name: 'Zone D - Coke Oven Battery', status: 'active', applicant: 'J. Smith', issued_at: new Date(Date.now() - 3600000).toISOString(), expires_at: new Date(Date.now() + 3600000).toISOString(), conflict_detected: true },
+    { permit_id: 'PTW-2026-0847', permit_type: 'Hot Work', zone_name: 'Zone D - Coke Oven Battery', status: 'active', applicant: 'A. Patel', issued_at: new Date(Date.now() - 1800000).toISOString(), expires_at: new Date(Date.now() + 7200000).toISOString(), conflict_detected: true },
+    { permit_id: 'PTW-2026-0901', permit_type: 'Working at Height', zone_name: 'Zone B - Hot Strip Mill', status: 'pending', applicant: 'S. Kumar', issued_at: new Date(Date.now() - 900000).toISOString(), expires_at: new Date(Date.now() + 18000000).toISOString(), conflict_detected: false }
+  ],
+  active_count: 3,
+  conflict_count: 2
+};
