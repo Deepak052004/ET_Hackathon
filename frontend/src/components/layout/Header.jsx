@@ -1,19 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import ConnectionBadge from './ConnectionBadge';
+import { useStore } from '../../lib/store';
 
-// ─── Page title map ───────────────────────────────────────────────────────────
 const PAGE_TITLES = {
-  '/dashboard':    'Operations Command Center',
-  '/investigation': 'Incident Investigation',
-  '/permits':      'Permit Intelligence Console',
-  '/graph':        'Knowledge Graph Explorer',
-  '/documents':    'Document & Compliance Corpus',
-  '/alerts':       'Security Alert Console',
-  '/settings':     'System Configuration',
+  '/dashboard':    'Asset Map',
+  '/investigation': 'Incident Protocol',
+  '/permits':      'Permits',
+  '/graph':        'Analytics',
+  '/documents':    'Support',
+  '/alerts':       'Telemetry',
+  '/settings':     'System Config',
 };
 
-// ─── IST clock helper ─────────────────────────────────────────────────────────
 function getISTTime() {
   return new Date().toLocaleTimeString('en-IN', {
     timeZone:  'Asia/Kolkata',
@@ -33,19 +32,17 @@ function getISTDate() {
   });
 }
 
-// ─── Header ───────────────────────────────────────────────────────────────────
 export default function Header() {
   const location = useLocation();
   const [time, setTime] = useState(getISTTime);
   const [date, setDate] = useState(getISTDate);
+  const openModal = useStore((s) => s.openModal);
 
-  // Derive page title from current path (exact match first, then prefix)
   const pageTitle =
     PAGE_TITLES[location.pathname] ??
     Object.entries(PAGE_TITLES).find(([k]) => location.pathname.startsWith(k))?.[1] ??
     'SafetyNexus AI';
 
-  // Live IST clock — updates every second
   useEffect(() => {
     const tick = setInterval(() => {
       setTime(getISTTime());
@@ -55,30 +52,49 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="h-16 flex items-center justify-between px-6 bg-slate-900 border-b border-slate-800 flex-shrink-0">
-      {/* ── Left: page title ──────────────────────────────────────────────── */}
-      <div className="flex flex-col leading-tight">
-        <h1 className="text-sm font-semibold text-slate-100 tracking-tight">
-          {pageTitle}
-        </h1>
-        <span className="text-xs text-slate-500 font-mono">
-          SafetyNexus AI · IntelliPlant
-        </span>
+    <header className="fixed top-0 w-full z-50 h-16 bg-surface-container border-b border-outline-variant flex justify-between items-center px-8">
+      <div className="flex items-center gap-8">
+        <span className="font-display text-xl font-bold text-primary tracking-tight">SafetyNexus AI</span>
+        <div className="hidden md:flex gap-6 items-center h-full h-16">
+          <div className="h-full flex items-center px-2 text-on-surface-variant font-mono text-xs uppercase">
+            Network Status: <span className="ml-2 text-primary"><ConnectionBadge /></span>
+          </div>
+          <div className="h-full flex items-center px-2 text-primary border-b-2 border-primary font-mono text-xs uppercase">
+            {pageTitle}
+          </div>
+        </div>
       </div>
-
-      {/* ── Center: live IST clock ────────────────────────────────────────── */}
-      <div className="flex flex-col items-center leading-tight select-none">
-        <span className="font-mono text-lg font-semibold text-slate-100 tabular-nums">
-          {time}
-        </span>
-        <span className="font-mono text-[10px] text-slate-500 tracking-wide uppercase">
-          {date} IST
-        </span>
-      </div>
-
-      {/* ── Right: connection badge ───────────────────────────────────────── */}
-      <div className="flex items-center">
-        <ConnectionBadge />
+      <div className="flex items-center gap-4">
+        <div className="flex gap-2 mr-4">
+          <button 
+            onClick={() => openModal('notifications')}
+            className="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:bg-surface-bright transition-colors"
+          >
+            <span className="material-symbols-outlined">notifications_active</span>
+          </button>
+          <button 
+            onClick={() => openModal('settings')}
+            className="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:bg-surface-bright transition-colors"
+          >
+            <span className="material-symbols-outlined">settings</span>
+          </button>
+          <button 
+            onClick={() => openModal('terminal')}
+            className="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:bg-surface-bright transition-colors"
+          >
+            <span className="material-symbols-outlined text-primary">terminal</span>
+          </button>
+        </div>
+        <div className="flex flex-col items-end leading-none mr-4">
+          <span className="font-mono text-lg font-semibold text-primary">{time}</span>
+          <span className="font-mono text-[10px] text-on-surface-variant">{date} IST</span>
+        </div>
+        <button 
+          onClick={() => window.dispatchEvent(new CustomEvent('toast', { detail: 'System Diagnostic Check... ALL SYSTEMS NOMINAL.' }))}
+          className="bg-primary text-on-primary px-4 py-2 font-mono text-xs font-bold uppercase tracking-widest active:scale-95 transition-transform duration-150 hover:bg-primary/90"
+        >
+          System Check
+        </button>
       </div>
     </header>
   );

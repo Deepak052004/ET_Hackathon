@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SafetyNexus AI | Zones &amp; Infrastructure Map</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#343d96",
+                    "background": "#10141a",
+                    "primary": "#c3f5ff",
+                    "secondary-fixed-dim": "#bdc2ff",
+                    "surface-container": "#1c2026",
+                    "outline": "#849396",
+                    "on-secondary": "#1b247f",
+                    "tertiary-container": "#ffc2b3",
+                    "surface-container-low": "#181c22",
+                    "on-surface": "#dfe2eb",
+                    "on-primary": "#00363d",
+                    "primary-fixed-dim": "#00daf3",
+                    "on-tertiary": "#621100",
+                    "tertiary": "#ffe7e2",
+                    "surface-bright": "#353940",
+                    "on-primary-fixed": "#001f24",
+                    "secondary-fixed": "#e0e0ff",
+                    "primary-fixed": "#9cf0ff",
+                    "surface-variant": "#31353c",
+                    "on-secondary-container": "#a8afff",
+                    "surface-dim": "#10141a",
+                    "on-surface-variant": "#bac9cc",
+                    "outline-variant": "#3b494c",
+                    "surface-container-highest": "#31353c",
+                    "on-tertiary-fixed": "#3c0700",
+                    "error": "#ffb4ab",
+                    "surface-container-lowest": "#0a0e14",
+                    "surface": "#10141a",
+                    "inverse-on-surface": "#2d3137",
+                    "surface-container-high": "#262a31",
+                    "on-tertiary-container": "#aa2600",
+                    "on-error": "#690005",
+                    "on-primary-fixed-variant": "#004f58",
+                    "tertiary-fixed": "#ffdad2",
+                    "on-secondary-fixed": "#000767",
+                    "tertiary-fixed-dim": "#ffb4a2",
+                    "inverse-surface": "#dfe2eb",
+                    "on-error-container": "#ffdad6",
+                    "inverse-primary": "#006875",
+                    "on-primary-container": "#00626e",
+                    "on-background": "#dfe2eb",
+                    "error-container": "#93000a",
+                    "secondary": "#bdc2ff",
+                    "on-tertiary-fixed-variant": "#8a1d00",
+                    "on-secondary-fixed-variant": "#343d96",
+                    "surface-tint": "#00daf3",
+                    "primary-container": "#00e5ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "32px",
+                    "unit": "4px",
+                    "container-max": "1440px"
+            },
+            "fontFamily": {
+                    "mono-data": ["JetBrains Mono"],
+                    "headline-lg-mobile": ["Chakra Petch"],
+                    "body-lg": ["Inter"],
+                    "mono-label": ["JetBrains Mono"],
+                    "headline-md": ["Chakra Petch"],
+                    "headline-sm": ["Chakra Petch"],
+                    "headline-lg": ["Chakra Petch"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "mono-data": ["14px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                    "mono-label": ["11px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "headline-md": ["32px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { background-color: #10141a; color: #dfe2eb; overflow: hidden; }
+        .map-grid {
+            background-image: radial-gradient(circle, #3b494c 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .scanline {
+            background: linear-gradient(to bottom, transparent, rgba(0, 218, 243, 0.05), transparent);
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: -100%;
+            animation: scan 8s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: -100%; }
+            100% { top: 100%; }
+        }
+        .data-glow {
+            text-shadow: 0 0 8px rgba(195, 245, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 h-16 bg-surface-container dark:bg-surface-container border-b border-outline-variant dark:border-outline-variant flex justify-between items-center px-margin-desktop w-full">
+<div class="flex items-center gap-4">
+<span class="font-headline-sm text-headline-sm font-bold text-primary dark:text-primary tracking-tight">SafetyNexus AI</span>
+<div class="hidden md:flex gap-1 items-center bg-surface-container-lowest px-3 py-1 rounded border border-outline-variant">
+<span class="material-symbols-outlined text-primary text-[18px]">terminal</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant">NODE_ID: SFX-001</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-bright dark:hover:bg-surface-bright transition-colors p-2 rounded">notifications_active</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-bright dark:hover:bg-surface-bright transition-colors p-2 rounded">settings</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-bright dark:hover:bg-surface-bright transition-colors p-2 rounded">terminal</button>
+</div>
+<div class="flex items-center gap-3 border-l border-outline-variant pl-6">
+<div class="text-right">
+<p class="font-mono-label text-mono-label leading-tight text-on-surface">SYSTEM_CHECK</p>
+<p class="text-[10px] text-primary">OPERATIONAL</p>
+</div>
+<img class="w-10 h-10 rounded-full border border-primary/30" data-alt="Close up professional headshot of a focused industrial safety director in his 40s wearing a high-tech dark polo shirt. The lighting is cold, blue-toned, and clinical, reflecting a modern mission control command center environment. He has a serious, authoritative expression suitable for a high-stakes safety operation role." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgeBz-c9owhWMLTySy1WLUw7vIXcvPbZSZuyIW2Y9Pu4zAi7waGxXiGMVA0kW95hi8cnPVeulmgvOR-KQV_xkHX7h8gOdNx3P0_HyZ_32cI8OAb2K5nfHyXyKrqYCOtkPwn2ww_ce5UxHJMYltY5uejr1-MkAzx5zBGFIgsrW-xX-gZLjkDvNeexKX5PW0pUVBj2MQ_iG4EctTFfl6auiAr-j-kDhxoISdAcCmIwYYBAkISEp8OMqueg"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant dark:border-outline-variant flex flex-col py-4 gap-2">
+<div class="px-6 mb-6">
+<h2 class="font-headline-sm text-headline-sm text-primary">Command Center</h2>
+<p class="font-mono-label text-mono-label text-on-surface-variant opacity-70 uppercase">Sector 7G - Active</p>
+</div>
+<div class="flex-1 space-y-1">
+<a class="flex items-center px-6 py-3 gap-4 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 active:translate-x-1" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-mono-label text-mono-label">Dashboard</span>
+</a>
+<a class="flex items-center px-6 py-3 gap-4 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 active:translate-x-1" href="#">
+<span class="material-symbols-outlined">bia</span>
+<span class="font-mono-label text-mono-label">Telemetry</span>
+</a>
+<a class="flex items-center px-6 py-3 gap-4 bg-secondary-container dark:bg-secondary-container text-on-secondary-container dark:text-on-secondary-container border-l-4 border-primary transition-all duration-200 active:translate-x-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-mono-label text-mono-label">Zones</span>
+</a>
+<a class="flex items-center px-6 py-3 gap-4 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 active:translate-x-1" href="#">
+<span class="material-symbols-outlined text-error">warning</span>
+<span class="font-mono-label text-mono-label">Incidents</span>
+</a>
+<a class="flex items-center px-6 py-3 gap-4 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 active:translate-x-1" href="#">
+<span class="material-symbols-outlined">query_stats</span>
+<span class="font-mono-label text-mono-label">Analytics</span>
+</a>
+</div>
+<div class="px-4 mb-4">
+<button class="w-full py-3 bg-error-container text-on-error-container font-mono-label text-mono-label rounded border border-error/50 flex items-center justify-center gap-2 hover:bg-error transition-colors">
+<span class="material-symbols-outlined text-sm">emergency</span>
+                EMERGENCY STOP
+            </button>
+</div>
+<div class="border-t border-outline-variant pt-4 flex flex-col gap-1">
+<a class="flex items-center px-6 py-2 gap-4 text-on-surface-variant hover:bg-surface-container-high text-xs" href="#">
+<span class="material-symbols-outlined text-sm">help</span>
+<span class="font-mono-label text-mono-label">Support</span>
+</a>
+<a class="flex items-center px-6 py-2 gap-4 text-on-surface-variant hover:bg-surface-container-high text-xs" href="#">
+<span class="material-symbols-outlined text-sm">history</span>
+<span class="font-mono-label text-mono-label">Logs</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-16 h-[calc(100vh-64px)] overflow-hidden flex flex-col lg:flex-row">
+<!-- Map Visualization Zone -->
+<div class="relative flex-1 bg-surface-container-lowest p-8 overflow-hidden">
+<!-- Background Layer -->
+<div class="absolute inset-0 z-0 opacity-20">
+<div class="w-full h-full bg-cover bg-center mix-blend-luminosity" data-alt="High-resolution, ultra-detailed architectural floor plan of a massive industrial server farm and manufacturing facility. The plan uses blueprint-style cyan and dark navy lines on a black background. Complex networks of walkways, machinery stations, and cooling pipes are visible, creating a dense technical grid pattern consistent with mission control aesthetics." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBWz4jOc9UG06PNvrA2_TUPsU2gzmNNCF_O5ZrEXtexU7g72TpGN17-ZOjxAMlw_XT8Do-Xt8JtJpxPiNy7FLe3V9wWzkQ-2jr0kEBMim97UETtcHV1gRhAazyx8gDUc64gnlr0wnc2iTSI0Dg7kE-Q9_TVnv9ly0iz902zny_4pcq2gHkROps2Bd9JVv7IUx9VKtLelI38_XPZ0NqpfZ2J01psHSaxhumyFN9XN46keoo3v6yNjVpOow')"></div>
+<div class="absolute inset-0 map-grid"></div>
+<div class="scanline"></div>
+</div>
+<!-- Content Overlays -->
+<div class="relative z-10 h-full flex flex-col">
+<div class="flex justify-between items-start mb-8">
+<div>
+<h1 class="font-headline-md text-headline-md text-primary data-glow">INFRASTRUCTURE_NODES_ACTIVE</h1>
+<p class="font-mono-label text-mono-label text-on-surface-variant">TIMESTAMP: 2024-05-24 // 14:32:05 UTC</p>
+</div>
+<div class="flex gap-2">
+<div class="px-3 py-1 bg-surface-container-high border border-primary/30 rounded flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-mono-label text-mono-label text-primary">REAL-TIME SYNC</span>
+</div>
+</div>
+</div>
+<!-- Interactive Zone Map (Simplified Representation) -->
+<div class="flex-1 relative flex items-center justify-center">
+<svg class="w-full h-full max-w-4xl drop-shadow-[0_0_15px_rgba(0,218,243,0.15)]" viewbox="0 0 800 500">
+<!-- Sector A -->
+<path class="fill-surface-container-high/40 stroke-outline-variant stroke-[1px] hover:stroke-primary cursor-pointer transition-all" d="M50 50 L350 50 L350 200 L50 200 Z"></path>
+<circle class="fill-primary" cx="200" cy="125" r="4"></circle>
+<text class="fill-primary font-mono-label text-[10px]" x="60" y="80">SECTOR_01A / SERVER_CORE</text>
+<rect class="fill-primary" height="4" width="80" x="60" y="180"></rect>
+<!-- Sector B - Warning -->
+<path class="fill-surface-container-high/40 stroke-outline-variant stroke-[1px] hover:stroke-tertiary-container cursor-pointer transition-all" d="M380 50 L750 50 L750 300 L380 300 Z"></path>
+<circle class="fill-tertiary-container animate-ping" cx="565" cy="175" r="4"></circle>
+<text class="fill-tertiary-container font-mono-label text-[10px]" x="390" y="80">SECTOR_02B / COOLING_STATION</text>
+<rect class="fill-tertiary-container" height="4" width="120" x="390" y="280"></rect>
+<!-- Sector C -->
+<path class="fill-surface-container-high/40 stroke-outline-variant stroke-[1px] hover:stroke-primary cursor-pointer transition-all" d="M50 230 L350 230 L350 450 L50 450 Z"></path>
+<circle class="fill-primary" cx="200" cy="340" r="4"></circle>
+<text class="fill-primary font-mono-label text-[10px]" x="60" y="260">SECTOR_03C / LOGISTICS</text>
+<!-- Sector D -->
+<path class="fill-surface-container-high/40 stroke-outline-variant stroke-[1px] hover:stroke-primary cursor-pointer transition-all" d="M380 330 L750 330 L750 450 L380 450 Z"></path>
+<circle class="fill-primary" cx="565" cy="390" r="4"></circle>
+<text class="fill-primary font-mono-label text-[10px]" x="390" y="360">SECTOR_04D / ADMIN</text>
+<!-- Global Connections -->
+<path class="stroke-outline-variant stroke-[1px] stroke-dasharray-[4,4]" d="M350 125 L380 125"></path>
+<path class="stroke-outline-variant stroke-[1px] stroke-dasharray-[4,4]" d="M350 340 L380 390"></path>
+<path class="stroke-outline-variant stroke-[1px] stroke-dasharray-[4,4]" d="M200 200 L200 230"></path>
+</svg>
+<!-- Float-over Status Badges -->
+<div class="absolute top-[20%] left-[25%] px-2 py-1 bg-primary text-background font-mono-label text-[10px] uppercase">Normal</div>
+<div class="absolute top-[45%] right-[25%] px-2 py-1 bg-tertiary-container text-on-tertiary-container font-mono-label text-[10px] uppercase">Warning_Delta</div>
+</div>
+<!-- Footer Status Bar -->
+<div class="mt-auto grid grid-cols-4 gap-4 pb-4">
+<div class="border-l-2 border-primary pl-4">
+<p class="font-mono-label text-mono-label text-on-surface-variant">ACTIVE_NODES</p>
+<p class="font-mono-data text-mono-data text-primary text-xl">1,402</p>
+</div>
+<div class="border-l-2 border-primary pl-4">
+<p class="font-mono-label text-mono-label text-on-surface-variant">TRAFFIC_LOAD</p>
+<p class="font-mono-data text-mono-data text-primary text-xl">82.4%</p>
+</div>
+<div class="border-l-2 border-tertiary-container pl-4">
+<p class="font-mono-label text-mono-label text-on-surface-variant">ANOMALIES</p>
+<p class="font-mono-data text-mono-data text-tertiary-container text-xl">03</p>
+</div>
+<div class="border-l-2 border-primary pl-4">
+<p class="font-mono-label text-mono-label text-on-surface-variant">LATENCY</p>
+<p class="font-mono-data text-mono-data text-primary text-xl">14ms</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Side Data Panel -->
+<aside class="w-full lg:w-96 bg-surface-container border-l border-outline-variant flex flex-col">
+<div class="p-6 border-b border-outline-variant">
+<div class="flex justify-between items-center mb-4">
+<span class="font-mono-label text-mono-label text-primary">SECTOR_DATA_STREAM</span>
+<span class="material-symbols-outlined text-primary text-lg">expand_content</span>
+</div>
+<div class="p-4 bg-surface-container-lowest border border-tertiary-container/30 rounded relative">
+<div class="absolute top-0 left-0 w-full h-1 bg-tertiary-container/20"></div>
+<div class="flex justify-between items-center mb-2">
+<h3 class="font-headline-sm text-[16px] text-tertiary-container">Sector_02B</h3>
+<span class="bg-tertiary-container text-on-tertiary-container px-1.5 py-0.5 text-[9px] font-bold rounded">LEVEL_2_ALERT</span>
+</div>
+<p class="text-xs text-on-surface-variant mb-4">Cooling Unit Pump #4 experiencing pressure variance outside nominal range (Δ=12.4%).</p>
+<div class="grid grid-cols-2 gap-2">
+<div class="bg-surface-container-low p-2 border border-outline-variant/30 rounded">
+<p class="text-[9px] font-mono-label uppercase text-on-surface-variant">Pressure</p>
+<p class="font-mono-data text-mono-data text-on-surface">144.2 PSI</p>
+</div>
+<div class="bg-surface-container-low p-2 border border-outline-variant/30 rounded">
+<p class="text-[9px] font-mono-label uppercase text-on-surface-variant">Temp</p>
+<p class="font-mono-data text-mono-data text-tertiary-container">82.4°C</p>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-1 p-6 overflow-y-auto space-y-6">
+<!-- Environmental Data Cluster -->
+<div>
+<h4 class="font-mono-label text-mono-label text-on-surface-variant mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]">thermostat</span>
+                        ENVIRONMENTAL_READOUTS
+                    </h4>
+<div class="space-y-3">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between text-[11px] font-mono-label">
+<span>HUMIDITY</span>
+<span>42%</span>
+</div>
+<div class="h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 42%"></div>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between text-[11px] font-mono-label">
+<span>AIR_QUALITY</span>
+<span>98%</span>
+</div>
+<div class="h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 98%"></div>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between text-[11px] font-mono-label">
+<span>OXYGEN_LVL</span>
+<span>20.9%</span>
+</div>
+<div class="h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 95%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Incident History Mini-Log -->
+<div>
+<h4 class="font-mono-label text-mono-label text-on-surface-variant mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]">history</span>
+                        RECENT_LOGS
+                    </h4>
+<div class="space-y-2">
+<div class="p-2 border-l border-primary bg-surface-container-high/50 text-[11px]">
+<p class="text-primary font-bold">14:28:11 - SENSOR_TRIP</p>
+<p class="text-on-surface-variant font-mono-data text-[10px]">Zone 03C entry door unauthorized toggle.</p>
+</div>
+<div class="p-2 border-l border-outline text-[11px]">
+<p class="text-on-surface-variant font-bold">14:15:02 - BKUP_START</p>
+<p class="text-on-surface-variant/70 font-mono-data text-[10px]">Routine database replication initiated.</p>
+</div>
+<div class="p-2 border-l border-tertiary-container bg-tertiary-container/5 text-[11px]">
+<p class="text-tertiary-container font-bold">14:02:44 - TEMP_SPIKE</p>
+<p class="text-on-surface-variant font-mono-data text-[10px]">Sector 02B cooling efficiency drop detected.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="p-6 bg-surface-container-high/50 mt-auto border-t border-outline-variant">
+<button class="w-full py-3 border border-primary text-primary font-mono-label text-mono-label rounded flex items-center justify-center gap-2 hover:bg-primary hover:text-on-primary transition-all active:scale-95">
+<span class="material-symbols-outlined text-[16px]">print</span>
+                    GENERATE_ZONE_REPORT
+                </button>
+</div>
+</aside>
+</main>
+<!-- Floating UI elements for Industrial feel -->
+<div class="fixed bottom-6 left-[280px] pointer-events-none opacity-40 select-none">
+<p class="font-mono-data text-[10px] text-primary leading-tight">
+            // SECURE_SYSTEM_V.4.2<br/>
+            // ENCRYPTION_SHA256_ACTIVE<br/>
+            // LOC_REF: LAT_44.31_LON_12.82
+        </p>
+</div>
+<script>
+        // Micro-interactions and real-time feel
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            // Subtle parallax for map grid if needed
+        });
+
+        // Simulating data updates
+        setInterval(() => {
+            const latencies = ['14ms', '12ms', '16ms', '15ms'];
+            const randomLatency = latencies[Math.floor(Math.random() * latencies.length)];
+            const latencyElement = document.querySelectorAll('.font-mono-data.text-xl')[3];
+            if(latencyElement) latencyElement.innerText = randomLatency;
+        }, 3000);
+    </script>
+</body></html>

@@ -19,7 +19,8 @@ from app.config import get_settings
 from app.models.db import create_tables, SessionLocal
 from app.models.sensor import Sensor, SensorReading, SensorType
 from app.models.zone import Zone
-from app.api import sensors, alerts, risk, permits, incidents, compliance, query, knowledge, predictions
+from app.api import sensors, alerts, risk, permits, incidents, compliance, query, knowledge, predictions, vision
+from app.services.emergency import check_and_trigger_evacuations
 from sqlalchemy import desc
 
 settings = get_settings()
@@ -166,6 +167,13 @@ async def sensor_broadcast_loop():
 
             # Risk updates every 9 seconds (every 3rd tick)
             if tick % 3 == 0:
+                # Trigger emergency orchestrator check before broadcasting risks
+                db = SessionLocal()
+                try:
+                    check_and_trigger_evacuations(db)
+                finally:
+                    db.close()
+                    
                 zone_payload = {
                     "zones": _get_zone_risk_summary(),
                     "timestamp": datetime.utcnow().isoformat(),
@@ -230,6 +238,7 @@ app.include_router(compliance.router)# GET /api/compliance
 app.include_router(query.router)     # POST /api/query  ← PLAN URL
 app.include_router(knowledge.router) # GET /api/knowledge/*  ← Knowledge Graph
 app.include_router(predictions.router) # GET /api/predictions/*  ← Predictive Analytics
+app.include_router(vision.router)    # GET/POST /api/vision/* ← CV Mock
 
 # ─── Health & Meta ───────────────────────────────────────────────────────────
 @app.get("/api/health")

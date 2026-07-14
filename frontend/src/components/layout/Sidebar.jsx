@@ -1,36 +1,19 @@
 import { NavLink } from 'react-router-dom';
-import {
-  Shield,
-  LayoutDashboard,
-  SearchCode,
-  FileCheck2,
-  GitFork,
-  FolderOpen,
-  BellRing,
-  Settings2,
-} from 'lucide-react';
 import { useStore } from '../../lib/store';
-import ConnectionBadge from './ConnectionBadge';
 
-// ─── Nav route definitions ────────────────────────────────────────────────────
 const NAV_ITEMS = [
-  { to: '/dashboard',    icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/investigation', icon: SearchCode,     label: 'Investigation' },
-  { to: '/permits',      icon: FileCheck2,      label: 'Permits',        badge: 'permits' },
-  { to: '/graph',        icon: GitFork,         label: 'Knowledge Graph' },
-  { to: '/documents',    icon: FolderOpen,      label: 'Documents' },
-  { to: '/alerts',       icon: BellRing,        label: 'Alerts',         badge: 'alerts' },
-  { to: '/settings',     icon: Settings2,       label: 'Settings' },
+  { to: '/dashboard',    icon: 'dashboard',   label: 'DASHBOARD' },
+  { to: '/alerts',       icon: 'bia',         label: 'TELEMETRY', badge: 'alerts' },
+  { to: '/permits',      icon: 'map',         label: 'ZONES',     badge: 'permits' },
+  { to: '/investigation', icon: 'warning',     label: 'INCIDENTS' },
+  { to: '/graph',        icon: 'query_stats', label: 'ANALYTICS' },
 ];
 
-// ─── Sidebar ──────────────────────────────────────────────────────────────────
 export default function Sidebar() {
   const liveAlerts = useStore((s) => s.liveAlerts);
   const zones      = useStore((s) => s.zones);
 
-  // Permit conflict count — zones that have more than 1 active permit
   const conflictCount = zones.filter((z) => z.active_permits > 1).length;
-  // Alert count — unresolved live alerts
   const alertCount = liveAlerts.filter((a) => a.status !== 'resolved').length;
 
   const getBadge = (key) => {
@@ -39,24 +22,27 @@ export default function Sidebar() {
     return null;
   };
 
+  const handleEmergencyStop = () => {
+    alert("CRITICAL ALARM: Emergency Stop Initiated. Evacuating all active zones.");
+  };
+
+  const openModal = useStore((s) => s.openModal);
+
   return (
-    <aside className="w-64 flex-shrink-0 h-full bg-slate-900 border-r border-slate-800 flex flex-col">
-      {/* ── Logo area ──────────────────────────────────────────────────────── */}
-      <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-800">
-        <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-slate-800">
-          <Shield className="h-5 w-5 text-sky-400" />
-        </div>
-        <div className="flex flex-col leading-tight">
-          <span className="text-sm font-semibold text-slate-100 tracking-tight">
-            SafetyNexus AI
-          </span>
-          <span className="text-xs text-slate-500 font-mono">IntelliPlant</span>
+    <aside className="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 bg-surface-container-low border-r border-outline-variant flex flex-col py-4 gap-2 hidden md:flex z-40">
+      <div className="px-6 mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-outline-variant rounded-sm flex items-center justify-center overflow-hidden">
+            <img className="w-full h-full object-cover" alt="Safety Director" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC00pfhjXLx7ccmJbZFFfiEJxj6NnMtBPLRhHSkgsQuK7sn_n7o4kLd0OVhDe-G8QwXL31adhoIg5h_oqIiXLuKiZRHcIqYrPXdGMJLwqX1PhYb8W7Q1H6qe_nhTq6p6jBwWoM8fWtxBadcdFA2HRc5tY7u0X84Vl5-TCod0hBK8-OyrGKbcFDByRknlgEZwSSSIMMrMGbpK94QOfu5oDSRhtHAgLuA_Nwf7gwIFrzNVURMo6RgGvcv5g"/>
+          </div>
+          <div>
+            <p className="font-display text-lg font-bold text-primary leading-none">Command Center</p>
+            <p className="font-mono text-[10px] text-on-surface-variant uppercase tracking-tighter mt-1">Coke Oven Battery Alpha - Active</p>
+          </div>
         </div>
       </div>
-
-      {/* ── Navigation links ───────────────────────────────────────────────── */}
-      <nav className="flex-1 overflow-y-auto py-4 px-2 space-y-0.5">
-        {NAV_ITEMS.map(({ to, icon: Icon, label, badge }) => {
+      <nav className="flex-1 space-y-1">
+        {NAV_ITEMS.map(({ to, icon, label, badge }) => {
           const badgeCount = badge ? getBadge(badge) : null;
           const isAlerts   = badge === 'alerts';
 
@@ -66,39 +52,62 @@ export default function Sidebar() {
               to={to}
               className={({ isActive }) =>
                 [
-                  'flex items-center justify-between gap-3 rounded-sm px-3 py-2 text-sm transition-colors duration-150',
+                  'flex items-center justify-between px-6 py-3 font-mono text-sm uppercase transition-all',
                   isActive
-                    ? 'bg-slate-800 border-l-2 border-sky-500 text-slate-100 pl-[10px]'
-                    : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border-l-2 border-transparent pl-[10px]',
+                    ? 'bg-secondary-container text-on-secondary-container border-l-4 border-primary active:translate-x-1 font-bold'
+                    : 'text-on-surface-variant hover:bg-surface-container-high group',
                 ].join(' ')
               }
             >
-              <span className="flex items-center gap-3">
-                <Icon className="h-4 w-4 flex-shrink-0" />
-                <span>{label}</span>
-              </span>
+              {({ isActive }) => (
+                <>
+                  <span className="flex items-center gap-3">
+                    <span 
+                      className="material-symbols-outlined text-xl" 
+                      style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
+                    >
+                      {icon}
+                    </span>
+                    <span>{label}</span>
+                  </span>
 
-              {/* Badge */}
-              {badgeCount !== null && (
-                <span
-                  className={[
-                    'inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-sm text-[10px] font-mono font-bold',
-                    isAlerts
-                      ? 'bg-red-600 text-white'
-                      : 'bg-amber-600 text-white',
-                  ].join(' ')}
-                >
-                  {badgeCount}
-                </span>
+                  {badgeCount !== null && (
+                    <span
+                      className={[
+                        'inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-sm text-[10px] font-mono font-bold',
+                        isAlerts
+                          ? 'bg-error text-on-error'
+                          : 'bg-tertiary text-on-tertiary',
+                      ].join(' ')}
+                    >
+                      {badgeCount}
+                    </span>
+                  )}
+                </>
               )}
             </NavLink>
           );
         })}
       </nav>
-
-      {/* ── Bottom: connection status ──────────────────────────────────────── */}
-      <div className="border-t border-slate-800 px-4 py-3">
-        <ConnectionBadge />
+      <div className="mt-auto px-4 space-y-1">
+        <button 
+          onClick={() => openModal('drone')}
+          className="w-full bg-primary/10 text-primary py-2 px-4 font-mono text-[10px] uppercase font-bold tracking-widest border border-primary/30 flex items-center justify-center gap-2 mb-4 hover:bg-primary/20 transition-colors animate-pulse"
+        >
+          <span className="material-symbols-outlined text-sm">flight</span> DRONE FEED
+        </button>
+        <button 
+          onClick={() => openModal('emergency')}
+          className="w-full bg-error-container text-on-error-container py-3 px-4 font-mono text-xs uppercase font-bold tracking-widest border border-error/20 flex items-center justify-center gap-2 mb-4 hover:bg-error hover:text-on-error transition-colors"
+        >
+          <span className="material-symbols-outlined text-lg">emergency_home</span> Emergency Stop
+        </button>
+        <NavLink to="/documents" className="flex items-center gap-3 px-2 py-2 text-on-surface-variant font-mono text-xs uppercase hover:bg-surface-container-high transition-colors">
+          <span className="material-symbols-outlined text-lg">help</span> SUPPORT
+        </NavLink>
+        <button onClick={() => openModal('logs')} className="w-full flex items-center gap-3 px-2 py-2 text-on-surface-variant font-mono text-xs uppercase hover:bg-surface-container-high transition-colors text-left">
+          <span className="material-symbols-outlined text-lg">history</span> LOGS
+        </button>
       </div>
     </aside>
   );

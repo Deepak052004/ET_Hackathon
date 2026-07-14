@@ -7,7 +7,7 @@ import { API_BASE_URL } from './config';
 // - On non-2xx → throws { status, message }
 // - Never throws raw network errors — always wraps them
 
-const DEFAULT_TIMEOUT = 8000;
+const DEFAULT_TIMEOUT = 30000;
 
 async function request(method, path, body, timeoutMs = DEFAULT_TIMEOUT) {
   const controller = new AbortController();

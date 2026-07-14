@@ -148,7 +148,7 @@ Be specific, cite details from the incidents, and keep the response under 300 wo
                 "incident_type": m.get("incident_type"),
                 "severity": m.get("severity"),
                 "zone_name": m.get("zone_name"),
-                "relevance_score": round(1 - d, 3) if distances else None,
+                "relevance_score": round(1 - float(d), 3) if distances else None,
             }
             for m, d in zip(metas, distances or [0] * len(metas))
         ]
@@ -175,8 +175,8 @@ async def _call_gemini(prompt: str) -> str:
     try:
         import google.generativeai as genai
         genai.configure(api_key=settings.GEMINI_API_KEY)
-        model = genai.GenerativeModel("gemini-1.5-flash")
-        response = model.generate_content(prompt)
+        model = genai.GenerativeModel("gemini-3.1-flash-lite")
+        response = await model.generate_content_async(prompt)
         return response.text
     except Exception as e:
         return f"[Gemini unavailable: {str(e)}] Based on retrieved incidents, similar patterns involve compound risk factors including gas accumulation, active work permits, and inadequate monitoring. Key recommendation: implement multi-sensor correlation with automated permit cross-referencing."

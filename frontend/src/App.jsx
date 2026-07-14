@@ -121,11 +121,16 @@ function AppInner() {
   );
 }
 
+import ToastOverlay from './components/layout/ToastOverlay';
+import GlobalModals from './components/layout/GlobalModals';
+
 // ─── Root export ──────────────────────────────────────────────────────────────
 export default function App() {
   return (
     <BrowserRouter>
       <AppInner />
+      <ToastOverlay />
+      <GlobalModals />
     </BrowserRouter>
   );
 }

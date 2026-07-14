@@ -9,20 +9,15 @@ import OfflineBanner from '../ui/OfflineBanner';
 
 export default function AppShell() {
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-950 text-slate-100 font-sans">
-      {/* Left navigation rail */}
+    <div className="bg-background text-on-surface font-sans overflow-hidden min-h-screen">
+      <Header />
       <Sidebar />
-
-      {/* Right content column */}
-      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
-        <Header />
-        <OfflineBanner />
-
-        {/* Scrollable page content */}
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-slate-950 p-6">
+      <OfflineBanner />
+      <main className="ml-0 md:ml-64 mt-16 p-6 h-[calc(100vh-64px)] overflow-y-auto scroll-smooth">
+        <div className="max-w-[1440px] mx-auto">
           <Outlet />
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }

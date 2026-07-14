@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SafetyNexus AI | Telemetry Dashboard</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#343d96",
+                    "background": "#10141a",
+                    "primary": "#c3f5ff",
+                    "secondary-fixed-dim": "#bdc2ff",
+                    "surface-container": "#1c2026",
+                    "outline": "#849396",
+                    "on-secondary": "#1b247f",
+                    "tertiary-container": "#ffc2b3",
+                    "surface-container-low": "#181c22",
+                    "on-surface": "#dfe2eb",
+                    "on-primary": "#00363d",
+                    "primary-fixed-dim": "#00daf3",
+                    "on-tertiary": "#621100",
+                    "tertiary": "#ffe7e2",
+                    "surface-bright": "#353940",
+                    "on-primary-fixed": "#001f24",
+                    "secondary-fixed": "#e0e0ff",
+                    "primary-fixed": "#9cf0ff",
+                    "surface-variant": "#31353c",
+                    "on-secondary-container": "#a8afff",
+                    "surface-dim": "#10141a",
+                    "on-surface-variant": "#bac9cc",
+                    "outline-variant": "#3b494c",
+                    "surface-container-highest": "#31353c",
+                    "on-tertiary-fixed": "#3c0700",
+                    "error": "#ffb4ab",
+                    "surface-container-lowest": "#0a0e14",
+                    "surface": "#10141a",
+                    "inverse-on-surface": "#2d3137",
+                    "surface-container-high": "#262a31",
+                    "on-tertiary-container": "#aa2600",
+                    "on-error": "#690005",
+                    "on-primary-fixed-variant": "#004f58",
+                    "tertiary-fixed": "#ffdad2",
+                    "on-secondary-fixed": "#000767",
+                    "tertiary-fixed-dim": "#ffb4a2",
+                    "inverse-surface": "#dfe2eb",
+                    "on-error-container": "#ffdad6",
+                    "inverse-primary": "#006875",
+                    "on-primary-container": "#00626e",
+                    "on-background": "#dfe2eb",
+                    "error-container": "#93000a",
+                    "secondary": "#bdc2ff",
+                    "on-tertiary-fixed-variant": "#8a1d00",
+                    "on-secondary-fixed-variant": "#343d96",
+                    "surface-tint": "#00daf3",
+                    "primary-container": "#00e5ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "32px",
+                    "unit": "4px",
+                    "container-max": "1440px"
+            },
+            "fontFamily": {
+                    "mono-data": ["JetBrains Mono"],
+                    "headline-lg-mobile": ["Chakra Petch"],
+                    "body-lg": ["Inter"],
+                    "mono-label": ["JetBrains Mono"],
+                    "headline-md": ["Chakra Petch"],
+                    "headline-sm": ["Chakra Petch"],
+                    "headline-lg": ["Chakra Petch"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "mono-data": ["14px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                    "mono-label": ["11px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "headline-md": ["32px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .data-grid-overlay {
+            background-image: radial-gradient(circle at 2px 2px, rgba(195, 245, 255, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .glow-cyan {
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+        }
+        .inset-border {
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+        .scanline {
+            background: linear-gradient(to bottom, transparent 0%, rgba(0, 229, 255, 0.03) 50%, transparent 100%);
+            height: 100px;
+            width: 100%;
+            position: absolute;
+            animation: scan 8s linear infinite;
+        }
+        @keyframes scan {
+            from { top: -100px; }
+            to { top: 100%; }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 h-16 bg-surface-container border-b border-outline-variant flex justify-between items-center px-margin-desktop">
+<div class="flex items-center gap-4">
+<span class="font-headline-sm text-headline-sm font-bold text-primary tracking-tight">SafetyNexus AI</span>
+<div class="h-6 w-px bg-outline-variant mx-2"></div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-primary glow-cyan animate-pulse"></div>
+<span class="font-mono-label text-mono-label text-primary uppercase">System Check: Optimal</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<button class="text-on-surface-variant hover:bg-surface-bright transition-colors p-2 rounded active:scale-95 duration-150">
+<span class="material-symbols-outlined">notifications_active</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-bright transition-colors p-2 rounded active:scale-95 duration-150">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-bright transition-colors p-2 rounded active:scale-95 duration-150">
+<span class="material-symbols-outlined">terminal</span>
+</button>
+</div>
+<button class="px-4 py-1.5 bg-primary text-on-primary font-mono-label uppercase tracking-widest active:scale-95 transition-transform">
+                System Check
+            </button>
+<img class="w-10 h-10 rounded-full border border-primary object-cover" data-alt="A professional close-up portrait of a safety director wearing technical gear in a high-tech control room environment. The lighting is cinematic with blue and cyan rim lights, emphasizing a focused and authoritative persona. High-contrast industrial aesthetic with dark background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDej2iRWyiIrX-TcZ2NbRiMdc41zMvBH3cMqlHkepdMyldcQjTwfc-sqN2Bq2hYKCBHwKrNp2CgMaWhRXU1tWipLM3bfN34ZZ3SYCQUPRFDXtVbnWOWYFoVK_uOFmG6aEUljiBNrgsHMphSWopN79gx7V51abTkOCdFQtE4BG64TasTObSpeH65WqBuK-QN-wmiP7wwuz7JxQFOoxZ33ggP4tNfepghpwXpIHPDw5uPSbQ-6gGUaoLX7w"/>
+</div>
+</header>
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 bg-surface-container-low border-r border-outline-variant flex flex-col py-4 gap-2 z-40">
+<div class="px-6 mb-6">
+<h2 class="font-headline-sm text-headline-sm text-primary">Command Center</h2>
+<p class="font-mono-label text-mono-label text-on-surface-variant opacity-70">Sector 7G - Active</p>
+</div>
+<div class="flex flex-col gap-1 px-2">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all active:translate-x-1" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-mono-label text-mono-label">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container border-l-4 border-primary transition-all active:translate-x-1" href="#">
+<span class="material-symbols-outlined">bia</span>
+<span class="font-mono-label text-mono-label">Telemetry</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all active:translate-x-1" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-mono-label text-mono-label">Zones</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all active:translate-x-1" href="#">
+<span class="material-symbols-outlined">warning</span>
+<span class="font-mono-label text-mono-label">Incidents</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all active:translate-x-1" href="#">
+<span class="material-symbols-outlined">query_stats</span>
+<span class="font-mono-label text-mono-label">Analytics</span>
+</a>
+</div>
+<div class="mt-auto flex flex-col gap-1 px-2">
+<div class="px-4 mb-4">
+<button class="w-full py-3 border border-error text-error font-mono-label uppercase tracking-widest hover:bg-error/10 active:scale-95 transition-all">
+                    Emergency Stop
+                </button>
+</div>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-mono-label text-mono-label">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-mono-label text-mono-label">Logs</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-16 p-gutter h-[calc(100vh-64px)] overflow-hidden relative">
+<!-- Background Asset with Overlay -->
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center grayscale brightness-[0.2]" data-alt="A wide, high-resolution cinematic shot of massive industrial turbines and complex piping in a modern, clean energy facility. The scene is bathed in cool midnight navy tones with sharp cyan light accents highlighting the metallic surfaces. Atmosphere is foggy and high-tech, evoking a mission control feel." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC6ivccQ-PbGEL9CEsUvDAKepPmXaXHR0jTxgbsbZ-NnU4lUk44FezBY4-2XepQsFbDFDVr4lrW1q1qBZNab5vNzZtCYZsk7FAg026HdV0M9g3h-0tgp7fq3bsLtyUhyRYHXiDVJhroLuaOjImATD5HEjRcMSJ2t-1V5IkImPovXvocxZYaIOzouyf3GuI4yegg0EHq1rbbMXaQsLzP0mr3ncwoAyj7B-GCLR6zgtyAqlZurwDgMArvHg')"></div>
+<div class="absolute inset-0 bg-background/60"></div>
+<div class="absolute inset-0 data-grid-overlay"></div>
+<div class="scanline"></div>
+</div>
+<!-- Dashboard UI Overlay -->
+<div class="relative z-10 grid grid-cols-12 grid-rows-6 gap-4 h-full">
+<!-- Left Column: Real-time Sensors -->
+<div class="col-span-3 row-span-6 flex flex-col gap-4">
+<!-- Sensor Card 1 -->
+<div class="bg-surface-container-high/80 backdrop-blur-md border border-outline-variant p-4 inset-border">
+<div class="flex justify-between items-start mb-2">
+<span class="font-mono-label text-mono-label text-primary">SENSOR_VB.042</span>
+<span class="text-primary material-symbols-outlined text-sm">vibration</span>
+</div>
+<div class="flex items-end gap-2 mb-4">
+<span class="font-mono-data text-headline-md text-primary">12.4</span>
+<span class="font-mono-label text-on-surface-variant mb-2">MM/S</span>
+</div>
+<div class="h-12 w-full flex items-end gap-1">
+<div class="w-full bg-primary/20 h-8 relative overflow-hidden">
+<div class="absolute inset-0 flex items-end gap-0.5">
+<div class="w-1 bg-primary h-2"></div><div class="w-1 bg-primary h-4"></div><div class="w-1 bg-primary h-3"></div><div class="w-1 bg-primary h-6"></div><div class="w-1 bg-primary h-5"></div><div class="w-1 bg-primary h-7"></div><div class="w-1 bg-primary h-3"></div><div class="w-1 bg-primary h-4"></div><div class="w-1 bg-primary h-2"></div><div class="w-1 bg-primary h-8"></div><div class="w-1 bg-primary h-6"></div><div class="w-1 bg-primary h-5"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sensor Card 2 -->
+<div class="bg-surface-container-high/80 backdrop-blur-md border border-outline-variant p-4 inset-border">
+<div class="flex justify-between items-start mb-2">
+<span class="font-mono-label text-mono-label text-tertiary">THERMAL_T.89</span>
+<span class="text-tertiary material-symbols-outlined text-sm">thermostat</span>
+</div>
+<div class="flex items-end gap-2 mb-4">
+<span class="font-mono-data text-headline-md text-tertiary">142.8</span>
+<span class="font-mono-label text-on-surface-variant mb-2">°C</span>
+</div>
+<div class="w-full bg-outline-variant h-1 overflow-hidden">
+<div class="bg-tertiary h-full w-[82%] glow-cyan"></div>
+</div>
+<div class="flex justify-between mt-2 font-mono-label text-[9px] text-on-surface-variant uppercase">
+<span>Min: 20°</span>
+<span>Max: 200°</span>
+</div>
+</div>
+<!-- Sensor Card 3 -->
+<div class="bg-surface-container-high/80 backdrop-blur-md border border-outline-variant p-4 inset-border">
+<div class="flex justify-between items-start mb-2">
+<span class="font-mono-label text-mono-label text-secondary">PRESSURE_P.12</span>
+<span class="text-secondary material-symbols-outlined text-sm">compress</span>
+</div>
+<div class="flex items-end gap-2 mb-4">
+<span class="font-mono-data text-headline-md text-secondary">4,281</span>
+<span class="font-mono-label text-on-surface-variant mb-2">KPA</span>
+</div>
+<svg class="w-full h-8 stroke-secondary fill-none" viewbox="0 0 100 20">
+<path d="M0,15 L10,12 L20,18 L30,5 L40,10 L50,8 L60,14 L70,2 L80,9 L90,12 L100,6" stroke-linecap="round" stroke-width="1.5"></path>
+</svg>
+</div>
+<!-- Live Logs -->
+<div class="flex-1 bg-surface-container-lowest/90 backdrop-blur-md border border-outline-variant overflow-hidden flex flex-col">
+<div class="p-3 border-b border-outline-variant flex justify-between items-center bg-surface-container">
+<span class="font-mono-label text-mono-label uppercase">Live Log Stream</span>
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+</div>
+<div class="p-3 font-mono-data text-[11px] leading-relaxed overflow-y-auto space-y-2 text-on-surface-variant">
+<p><span class="text-primary">[14:22:01]</span> SYS_AUTH: ACCESS GRANTED OPERATOR_42</p>
+<p><span class="text-primary">[14:22:05]</span> CORE_PUMP_01: VIBRATION LEVEL NOMINAL</p>
+<p><span class="text-tertiary">[14:22:12]</span> WARN: THERMAL SENSOR T.89 NEAR THRESHOLD</p>
+<p><span class="text-primary">[14:22:18]</span> NET_MGR: UPLINK ESTABLISHED SECTOR_7G</p>
+<p><span class="text-primary">[14:22:24]</span> AI_PROC: CALCULATING RISK COEFF...</p>
+<p><span class="text-primary">[14:22:30]</span> AI_PROC: RISK AT 0.04% - STABLE</p>
+<p><span class="text-primary">[14:22:45]</span> SYS_SYNC: ALL ZONES SYNCHRONIZED</p>
+</div>
+</div>
+</div>
+<!-- Center: Main Gauge and Visualizer -->
+<div class="col-span-6 row-span-6 flex flex-col gap-4">
+<div class="flex-1 flex flex-col items-center justify-center relative">
+<!-- Central Health Gauge -->
+<div class="relative w-80 h-80 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90 transform" viewbox="0 0 100 100">
+<circle class="text-outline-variant" cx="50" cy="50" fill="transparent" r="45" stroke="currentColor" stroke-width="2"></circle>
+<circle class="text-primary" cx="50" cy="50" fill="transparent" r="45" stroke="currentColor" stroke-dasharray="283" stroke-dashoffset="40" stroke-linecap="round" stroke-width="4" style="filter: drop-shadow(0 0 4px #00daf3)"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="font-mono-label text-on-surface-variant uppercase tracking-tighter">System Health</span>
+<span class="font-headline-lg text-primary leading-none">94.2</span>
+<span class="font-mono-label text-primary mt-1">% OPTIMAL</span>
+</div>
+<!-- Radar Sweeper Effect -->
+<div class="absolute inset-0 rounded-full border border-primary/10 animate-[spin_4s_linear_infinite]">
+<div class="h-1/2 w-1 bg-gradient-to-t from-primary/0 to-primary/40 ml-[158px]"></div>
+</div>
+</div>
+<!-- Target Focus Overlay -->
+<div class="absolute top-4 left-4 w-12 h-12 border-t-2 border-l-2 border-primary"></div>
+<div class="absolute top-4 right-4 w-12 h-12 border-t-2 border-r-2 border-primary"></div>
+<div class="absolute bottom-4 left-4 w-12 h-12 border-b-2 border-l-2 border-primary"></div>
+<div class="absolute bottom-4 right-4 w-12 h-12 border-b-2 border-r-2 border-primary"></div>
+<div class="mt-8 grid grid-cols-3 gap-8 w-full max-w-lg">
+<div class="text-center">
+<div class="font-mono-label text-[10px] text-on-surface-variant mb-1">NETWORK_LATENCY</div>
+<div class="font-mono-data text-headline-sm text-primary">12MS</div>
+</div>
+<div class="text-center">
+<div class="font-mono-label text-[10px] text-on-surface-variant mb-1">AI_CONFIDENCE</div>
+<div class="font-mono-data text-headline-sm text-primary">0.99</div>
+</div>
+<div class="text-center">
+<div class="font-mono-label text-[10px] text-on-surface-variant mb-1">ACTIVE_ALERTS</div>
+<div class="font-mono-data text-headline-sm text-tertiary">02</div>
+</div>
+</div>
+</div>
+<!-- Bottom Analytics Strip -->
+<div class="h-32 bg-surface-container-high/60 backdrop-blur-md border border-outline-variant p-4 flex gap-6 inset-border">
+<div class="flex-1">
+<div class="flex justify-between items-center mb-2">
+<span class="font-mono-label text-[10px] text-on-surface-variant uppercase">Stability Flux (H/L)</span>
+<span class="font-mono-label text-primary">+0.04%</span>
+</div>
+<div class="h-16 w-full bg-surface-container-lowest relative overflow-hidden border border-outline-variant/30">
+<div class="absolute inset-0 flex items-end gap-[2px] p-1">
+<div class="bg-primary/40 w-full h-[30%]"></div><div class="bg-primary/40 w-full h-[45%]"></div><div class="bg-primary/40 w-full h-[40%]"></div><div class="bg-primary/40 w-full h-[55%]"></div><div class="bg-primary/40 w-full h-[50%]"></div><div class="bg-primary/40 w-full h-[65%]"></div><div class="bg-primary/40 w-full h-[60%]"></div><div class="bg-primary/40 w-full h-[40%]"></div><div class="bg-primary/40 w-full h-[35%]"></div><div class="bg-primary/40 w-full h-[25%]"></div><div class="bg-primary/40 w-full h-[30%]"></div><div class="bg-primary/40 w-full h-[45%]"></div>
+</div>
+</div>
+</div>
+<div class="w-px bg-outline-variant"></div>
+<div class="w-48">
+<div class="font-mono-label text-[10px] text-on-surface-variant mb-2 uppercase">Zone Distribution</div>
+<div class="space-y-2">
+<div class="flex items-center gap-2">
+<div class="w-full bg-outline-variant h-1.5"><div class="bg-primary h-full w-[70%]"></div></div>
+<span class="font-mono-data text-[10px]">Z1</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-full bg-outline-variant h-1.5"><div class="bg-secondary h-full w-[45%]"></div></div>
+<span class="font-mono-data text-[10px]">Z2</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-full bg-outline-variant h-1.5"><div class="bg-tertiary h-full w-[15%]"></div></div>
+<span class="font-mono-data text-[10px]">Z3</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: System Status & Alerts -->
+<div class="col-span-3 row-span-6 flex flex-col gap-4">
+<!-- Status List -->
+<div class="bg-surface-container-high/80 backdrop-blur-md border border-outline-variant p-4 inset-border">
+<h3 class="font-mono-label text-mono-label mb-4 text-on-surface-variant">SUBSYSTEM STATUS</h3>
+<div class="space-y-3">
+<div class="flex justify-between items-center border-b border-outline-variant/30 pb-2">
+<span class="font-mono-label text-[10px] text-on-surface-variant">COOLING_CORE</span>
+<span class="px-2 py-0.5 bg-primary/20 text-primary text-[10px] font-mono-label">OK</span>
+</div>
+<div class="flex justify-between items-center border-b border-outline-variant/30 pb-2">
+<span class="font-mono-label text-[10px] text-on-surface-variant">LUBRICATION_A</span>
+<span class="px-2 py-0.5 bg-primary/20 text-primary text-[10px] font-mono-label">OK</span>
+</div>
+<div class="flex justify-between items-center border-b border-outline-variant/30 pb-2">
+<span class="font-mono-label text-[10px] text-on-surface-variant">POWER_GRID_7</span>
+<span class="px-2 py-0.5 bg-tertiary/20 text-tertiary text-[10px] font-mono-label">MODERATE</span>
+</div>
+<div class="flex justify-between items-center border-b border-outline-variant/30 pb-2">
+<span class="font-mono-label text-[10px] text-on-surface-variant">AI_CO_PROCESSOR</span>
+<span class="px-2 py-0.5 bg-primary/20 text-primary text-[10px] font-mono-label">OK</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-mono-label text-[10px] text-on-surface-variant">STORAGE_BUFFER</span>
+<span class="px-2 py-0.5 bg-primary/20 text-primary text-[10px] font-mono-label">OK</span>
+</div>
+</div>
+</div>
+<!-- Incident Quick View -->
+<div class="bg-surface-container-high/80 backdrop-blur-md border border-outline-variant p-4 inset-border flex-1">
+<h3 class="font-mono-label text-mono-label mb-4 text-on-surface-variant uppercase">Priority Alerts</h3>
+<div class="space-y-4">
+<div class="p-3 border border-tertiary/50 bg-tertiary/5">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-tertiary text-lg">warning</span>
+<span class="font-mono-label text-tertiary uppercase">Thermal Warning</span>
+</div>
+<p class="font-mono-data text-[10px] text-on-surface-variant">Sensor T.89 has exceeded delta threshold of +12% in last 5m.</p>
+<div class="mt-2 flex gap-2">
+<button class="px-2 py-1 bg-tertiary text-on-tertiary font-mono-label text-[9px] uppercase">Acknowledge</button>
+<button class="px-2 py-1 border border-tertiary text-tertiary font-mono-label text-[9px] uppercase">Details</button>
+</div>
+</div>
+<div class="p-3 border border-outline-variant/50 opacity-60">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-on-surface-variant text-lg">info</span>
+<span class="font-mono-label text-on-surface-variant uppercase">Calibration Required</span>
+</div>
+<p class="font-mono-data text-[10px] text-on-surface-variant">Biostat sync pending for Zone 4 environmentals.</p>
+</div>
+</div>
+</div>
+<!-- Footer Stats -->
+<div class="bg-primary/10 border border-primary/20 p-4">
+<div class="flex justify-between items-center">
+<span class="font-mono-label text-[10px] text-primary">UPTIME: 142D 06H 22M</span>
+<span class="material-symbols-outlined text-primary text-sm">database</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Micro-interaction Scripts -->
+<script>
+        // Update live data randomly for atmosphere
+        setInterval(() => {
+            const dataFields = document.querySelectorAll('.font-mono-data');
+            dataFields.forEach(field => {
+                if (field.innerText.includes('.') && !field.innerText.includes('MM/S')) {
+                    let val = parseFloat(field.innerText);
+                    let change = (Math.random() - 0.5) * 0.2;
+                    field.innerText = (val + change).toFixed(1);
+                }
+            });
+        }, 1000);
+
+        // Dynamic terminal-like scroll for logs
+        const logContainer = document.querySelector('.space-y-2');
+        setInterval(() => {
+            const time = new Date().toLocaleTimeString('en-GB', { hour12: false });
+            const logEntry = document.createElement('p');
+            const logs = [
+                "SYS_SYNC: DATA PACKET RECEIVED",
+                "THRM_MGR: ADJUSTING FAN SPEED +5%",
+                "NET_MON: NO ANOMALIES DETECTED",
+                "ENV_VAL: HUMIDITY AT 42.1%",
+                "AUTH_LOG: SYSTEM POLL COMPLETE"
+            ];
+            const msg = logs[Math.floor(Math.random() * logs.length)];
+            logEntry.innerHTML = `<span class="text-primary">[${time}]</span> ${msg}`;
+            logContainer.appendChild(logEntry);
+            if (logContainer.children.length > 20) logContainer.removeChild(logContainer.firstChild);
+            logContainer.parentElement.scrollTop = logContainer.parentElement.scrollHeight;
+        }, 3000);
+    </script>
+</body></html>

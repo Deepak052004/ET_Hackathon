@@ -20,6 +20,9 @@ export const useStore = create((set, get) => ({
   // worker-locations → currently empty array per backend (Phase 3 placeholder)
   workers: [],
 
+  // ── UI State ─────────────────────────────────────────────────────────────
+  activeModal: null, // 'terminal' | 'settings' | 'notifications' | 'emergency' | 'logs' | null
+
   // ── Actions ──────────────────────────────────────────────────────────────
   setSocketStatus: (status) => set({ socketStatus: status }),
   setLastHeartbeat: (ts) => set({ lastHeartbeat: ts }),
@@ -27,4 +30,7 @@ export const useStore = create((set, get) => ({
   setZones: (zones) => set({ zones }),
   setLiveAlerts: (alerts) => set({ liveAlerts: alerts }),
   setWorkers: (workers) => set({ workers }),
+  
+  openModal: (modalId) => set({ activeModal: modalId }),
+  closeModal: () => set({ activeModal: null }),
 }));

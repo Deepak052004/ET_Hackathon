@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Analytics &amp; Performance Report - SafetyNexus AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#343d96",
+                    "background": "#10141a",
+                    "primary": "#c3f5ff",
+                    "secondary-fixed-dim": "#bdc2ff",
+                    "surface-container": "#1c2026",
+                    "outline": "#849396",
+                    "on-secondary": "#1b247f",
+                    "tertiary-container": "#ffc2b3",
+                    "surface-container-low": "#181c22",
+                    "on-surface": "#dfe2eb",
+                    "on-primary": "#00363d",
+                    "primary-fixed-dim": "#00daf3",
+                    "on-tertiary": "#621100",
+                    "tertiary": "#ffe7e2",
+                    "surface-bright": "#353940",
+                    "on-primary-fixed": "#001f24",
+                    "secondary-fixed": "#e0e0ff",
+                    "primary-fixed": "#9cf0ff",
+                    "surface-variant": "#31353c",
+                    "on-secondary-container": "#a8afff",
+                    "surface-dim": "#10141a",
+                    "on-surface-variant": "#bac9cc",
+                    "outline-variant": "#3b494c",
+                    "surface-container-highest": "#31353c",
+                    "on-tertiary-fixed": "#3c0700",
+                    "error": "#ffb4ab",
+                    "surface-container-lowest": "#0a0e14",
+                    "surface": "#10141a",
+                    "inverse-on-surface": "#2d3137",
+                    "surface-container-high": "#262a31",
+                    "on-tertiary-container": "#aa2600",
+                    "on-error": "#690005",
+                    "on-primary-fixed-variant": "#004f58",
+                    "tertiary-fixed": "#ffdad2",
+                    "on-secondary-fixed": "#000767",
+                    "tertiary-fixed-dim": "#ffb4a2",
+                    "inverse-surface": "#dfe2eb",
+                    "on-error-container": "#ffdad6",
+                    "inverse-primary": "#006875",
+                    "on-primary-container": "#00626e",
+                    "on-background": "#dfe2eb",
+                    "error-container": "#93000a",
+                    "secondary": "#bdc2ff",
+                    "on-tertiary-fixed-variant": "#8a1d00",
+                    "on-secondary-fixed-variant": "#343d96",
+                    "surface-tint": "#00daf3",
+                    "primary-container": "#00e5ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "32px",
+                    "unit": "4px",
+                    "container-max": "1440px"
+            },
+            "fontFamily": {
+                    "mono-data": ["JetBrains Mono"],
+                    "headline-lg-mobile": ["Chakra Petch"],
+                    "body-lg": ["Inter"],
+                    "mono-label": ["JetBrains Mono"],
+                    "headline-md": ["Chakra Petch"],
+                    "headline-sm": ["Chakra Petch"],
+                    "headline-lg": ["Chakra Petch"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "mono-data": ["14px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                    "mono-label": ["11px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "headline-md": ["32px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #10141a;
+            color: #dfe2eb;
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-glow {
+            filter: drop-shadow(0 0 8px rgba(195, 245, 255, 0.4));
+        }
+        .inset-panel {
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+        .bg-overlay {
+            background: linear-gradient(180deg, rgba(16, 20, 26, 0.85) 0%, rgba(16, 20, 26, 0.95) 100%);
+        }
+        .zebra-row:nth-child(even) {
+            background-color: rgba(52, 61, 150, 0.1);
+        }
+    </style>
+</head>
+<body class="flex min-h-screen overflow-x-hidden">
+<!-- Side Navigation Shell -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 bg-surface-container-low border-r border-outline-variant flex flex-col py-4 gap-2 z-40 hidden md:flex">
+<div class="px-6 mb-6">
+<h2 class="font-headline-sm text-headline-sm text-primary">Command Center</h2>
+<p class="font-mono-label text-mono-label text-on-surface-variant">Sector 7G - Active</p>
+</div>
+<nav class="flex-1">
+<a class="flex items-center px-6 py-3 gap-4 text-on-surface-variant hover:bg-surface-container-high transition-all active:translate-x-1" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-mono-label text-mono-label uppercase">Dashboard</span>
+</a>
+<a class="flex items-center px-6 py-3 gap-4 text-on-surface-variant hover:bg-surface-container-high transition-all active:translate-x-1" href="#">
+<span class="material-symbols-outlined">bia</span>
+<span class="font-mono-label text-mono-label uppercase">Telemetry</span>
+</a>
+<a class="flex items-center px-6 py-3 gap-4 text-on-surface-variant hover:bg-surface-container-high transition-all active:translate-x-1" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-mono-label text-mono-label uppercase">Zones</span>
+</a>
+<a class="flex items-center px-6 py-3 gap-4 text-on-surface-variant hover:bg-surface-container-high transition-all active:translate-x-1" href="#">
+<span class="material-symbols-outlined">warning</span>
+<span class="font-mono-label text-mono-label uppercase">Incidents</span>
+</a>
+<!-- Active Tab: Analytics -->
+<a class="flex items-center px-6 py-3 gap-4 bg-secondary-container text-on-secondary-container border-l-4 border-primary transition-all active:translate-x-1" href="#">
+<span class="material-symbols-outlined">query_stats</span>
+<span class="font-mono-label text-mono-label uppercase">Analytics</span>
+</a>
+</nav>
+<div class="mt-auto px-4">
+<button class="w-full bg-error-container text-on-error-container font-mono-label text-mono-label uppercase py-3 rounded hover:brightness-110 active:scale-95 transition-all">
+                Emergency Stop
+            </button>
+<div class="mt-4 pt-4 border-t border-outline-variant">
+<a class="flex items-center px-2 py-2 gap-3 text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">help</span>
+<span class="font-mono-label text-[10px]">Support</span>
+</a>
+<a class="flex items-center px-2 py-2 gap-3 text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">history</span>
+<span class="font-mono-label text-[10px]">Logs</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Top App Bar Shell -->
+<header class="fixed top-0 w-full z-50 h-16 bg-surface-container border-b border-outline-variant flex justify-between items-center px-margin-desktop">
+<div class="flex items-center gap-8">
+<div class="font-headline-sm text-headline-sm font-bold text-primary tracking-tight">SafetyNexus AI</div>
+<div class="hidden lg:flex items-center gap-6">
+<span class="font-mono-label text-mono-label text-primary border-b-2 border-primary py-5">Analytics &amp; Reports</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant hover:bg-surface-bright transition-colors px-2 py-5 cursor-pointer">Live Stream</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant hover:bg-surface-bright transition-colors px-2 py-5 cursor-pointer">Archive</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<button class="material-symbols-outlined p-2 text-on-surface-variant hover:bg-surface-bright rounded transition-colors active:scale-95">notifications_active</button>
+<button class="material-symbols-outlined p-2 text-on-surface-variant hover:bg-surface-bright rounded transition-colors active:scale-95">settings</button>
+<button class="material-symbols-outlined p-2 text-on-surface-variant hover:bg-surface-bright rounded transition-colors active:scale-95">terminal</button>
+</div>
+<button class="bg-primary text-on-primary font-mono-label text-mono-label px-4 py-2 rounded-sm hover:brightness-110 active:scale-95 transition-all">
+                System Check
+            </button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline ml-2">
+<img class="w-full h-full object-cover" data-alt="A close-up, high-detail professional headshot of a safety director in a sleek corporate environment. The person has a focused, authoritative expression. The lighting is cold and clinical, with blue and cyan reflections from computer monitors casting sharp highlights on their features. The aesthetic is industrial modern and tech-centric." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDz49Au36VRWyL8iM4AxyGYr3lJgc8yaeKcyUV8qGA6BIR9JMrbNdkt1VsIFjFxnokZcyrOQbKzs-mGdSKPKpQPRssSsu4VM_UDDXG1yLV5iAnf_g7k-_xmfz8VTwYKSE-FnSGvi5Q5OZ4vXxloGxEwJU_pf10hy2PJV6r7d03mFafroWo80a_3uPORiQtRoJIXkr3YPhZFR5qv-9zs7MPmi79b1mx7u5x-dfYB_y1r3-xeDKcpvVR81Q"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-64 mt-16 p-8 relative min-h-screen">
+<!-- Background Imagery -->
+<div class="fixed inset-0 z-0 pointer-events-none opacity-20">
+<div class="absolute inset-0 bg-overlay"></div>
+<img class="w-full h-full object-cover" data-alt="A wide, panoramic professional engineering office photography shot. Modern high-tech control center with multiple glowing monitors, glass partitions, and a clean concrete floor. Technicians are visible in the distance working at modular desks. The lighting is sophisticated midnight navy with neon cyan accents from the equipment. The perspective is architectural and grand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuANv02cV342C7CLpTP0i1MquLmmFbJHbQVMGN5Snr9IZ-c7KoJK6Vo0wTzAnBGLIYwNYbxZXE5d2EFYvrbEYmvnekZDecpwgIpfnqSlkFRf3MW8XusSUPW1a0J5KjA2nnOvTBIrnopmuHlntbxGuEHUOoZpYtp3uoG2wZO60Rookvd5Xw2sRMbFWTUHX8dMQ8DWdquxqxiWi1YLtyfe7KaQyfZkcRzOpFn3oM1e_Vu8uYjrheVNVGtF7Q"/>
+</div>
+<div class="relative z-10 max-w-[1440px] mx-auto">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-primary uppercase tracking-tighter">Performance Analysis</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mt-2">Comprehensive long-term trend analysis of facility safety compliance, equipment uptime, and predictive failure telemetry for Q3 2024.</p>
+</div>
+<div class="flex gap-2">
+<div class="bg-surface-container-high px-4 py-2 border border-outline-variant flex flex-col">
+<span class="font-mono-label text-[9px] text-on-surface-variant uppercase">Time Period</span>
+<span class="font-mono-data text-mono-data text-primary">01 JUN — 30 AUG</span>
+</div>
+<div class="bg-surface-container-high px-4 py-2 border border-outline-variant flex flex-col">
+<span class="font-mono-label text-[9px] text-on-surface-variant uppercase">Data Source</span>
+<span class="font-mono-data text-mono-data text-primary">NEXUS-NODE-07</span>
+</div>
+</div>
+</div>
+<!-- Bento Grid Dashboard -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Main Trend Line Chart -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-high border border-outline-variant p-6 relative overflow-hidden group">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-mono-label text-mono-label text-on-surface uppercase flex items-center gap-2">
+<span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                            Safety Compliance Trend (3M)
+                        </h3>
+<span class="font-mono-data text-mono-data text-primary">AVG 98.4%</span>
+</div>
+<!-- Mock Line Chart -->
+<div class="h-64 w-full flex items-end gap-1 relative pt-4">
+<div class="absolute inset-0 flex flex-col justify-between opacity-10 pointer-events-none">
+<div class="border-t border-primary w-full"></div>
+<div class="border-t border-primary w-full"></div>
+<div class="border-t border-primary w-full"></div>
+<div class="border-t border-primary w-full"></div>
+</div>
+<svg class="absolute inset-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<path class="chart-glow" d="M0,80 L10,75 L20,78 L30,65 L40,68 L50,45 L60,50 L70,30 L80,35 L90,20 L100,25" fill="none" stroke="#c3f5ff" stroke-width="2"></path>
+<path d="M0,80 L10,75 L20,78 L30,65 L40,68 L50,45 L60,50 L70,30 L80,35 L90,20 L100,25 V100 H0 Z" fill="url(#grad1)" opacity="0.1"></path>
+<defs>
+<lineargradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#c3f5ff;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#c3f5ff;stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+<div class="flex justify-between mt-4 font-mono-label text-[10px] text-on-surface-variant">
+<span>JUN 2024</span>
+<span>JUL 2024</span>
+<span>AUG 2024</span>
+</div>
+</div>
+<!-- Equipment Uptime Bar Chart -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container-high border border-outline-variant p-6">
+<h3 class="font-mono-label text-mono-label text-on-surface uppercase mb-6">Uptime per Sub-System</h3>
+<div class="space-y-6">
+<div class="space-y-1">
+<div class="flex justify-between font-mono-data text-[12px]">
+<span>CENTRAL PROCESSING</span>
+<span class="text-primary">99.9%</span>
+</div>
+<div class="h-2 bg-surface-container-highest w-full relative">
+<div class="absolute top-0 left-0 h-full bg-primary" style="width: 99.9%"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between font-mono-data text-[12px]">
+<span>ROBOTIC ARM UNIT 04</span>
+<span class="text-primary">94.2%</span>
+</div>
+<div class="h-2 bg-surface-container-highest w-full relative">
+<div class="absolute top-0 left-0 h-full bg-primary" style="width: 94.2%"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between font-mono-data text-[12px]">
+<span>THERMAL SENSOR GRID</span>
+<span class="text-primary">98.1%</span>
+</div>
+<div class="h-2 bg-surface-container-highest w-full relative">
+<div class="absolute top-0 left-0 h-full bg-primary" style="width: 98.1%"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between font-mono-data text-[12px]">
+<span>AUXILIARY COOLING</span>
+<span class="text-secondary">88.5%</span>
+</div>
+<div class="h-2 bg-surface-container-highest w-full relative">
+<div class="absolute top-0 left-0 h-full bg-secondary" style="width: 88.5%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Radar Chart / System Health -->
+<div class="col-span-12 md:col-span-6 lg:col-span-4 bg-surface-container-high border border-outline-variant p-6 flex flex-col items-center">
+<h3 class="font-mono-label text-mono-label text-on-surface uppercase mb-6 w-full text-left">Safety Dimensions</h3>
+<div class="relative w-48 h-48 my-4">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 100 100">
+<!-- Background Circles -->
+<circle cx="50" cy="50" fill="none" r="45" stroke="rgba(255,255,255,0.05)" stroke-width="1"></circle>
+<circle cx="50" cy="50" fill="none" r="30" stroke="rgba(255,255,255,0.05)" stroke-width="1"></circle>
+<circle cx="50" cy="50" fill="none" r="15" stroke="rgba(255,255,255,0.05)" stroke-width="1"></circle>
+<!-- Web lines -->
+<line stroke="rgba(255,255,255,0.05)" stroke-width="1" x1="50" x2="50" y1="5" y2="95"></line>
+<line stroke="rgba(255,255,255,0.05)" stroke-width="1" x1="5" x2="95" y1="50" y2="50"></line>
+<!-- Data Shape -->
+<polygon fill="rgba(195, 245, 255, 0.2)" points="50,15 85,40 70,75 30,70 15,40" stroke="#c3f5ff" stroke-width="1.5"></polygon>
+</svg>
+<div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-4 font-mono-label text-[8px] uppercase">Fire</div>
+<div class="absolute right-0 top-1/2 translate-x-4 -translate-y-1/2 font-mono-label text-[8px] uppercase">Gas</div>
+<div class="absolute bottom-0 right-1/4 translate-y-4 font-mono-label text-[8px] uppercase">Elec</div>
+<div class="absolute bottom-0 left-1/4 translate-y-4 font-mono-label text-[8px] uppercase">Motion</div>
+<div class="absolute left-0 top-1/2 -translate-x-4 -translate-y-1/2 font-mono-label text-[8px] uppercase">Noise</div>
+</div>
+</div>
+<!-- Detailed Log Table -->
+<div class="col-span-12 md:col-span-6 lg:col-span-8 bg-surface-container-high border border-outline-variant">
+<div class="p-6 border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-mono-label text-mono-label text-on-surface uppercase">Compliance Incident Logs</h3>
+<button class="text-primary font-mono-label text-[10px] uppercase hover:underline">Export CSV</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-highest font-mono-label text-[10px] text-on-surface-variant uppercase">
+<tr>
+<th class="px-6 py-3 border-b border-outline-variant">ID/TS</th>
+<th class="px-6 py-3 border-b border-outline-variant">Sector</th>
+<th class="px-6 py-3 border-b border-outline-variant">Type</th>
+<th class="px-6 py-3 border-b border-outline-variant">Status</th>
+<th class="px-6 py-3 border-b border-outline-variant text-right">Value</th>
+</tr>
+</thead>
+<tbody class="font-mono-data text-[13px] text-on-surface">
+<tr class="zebra-row">
+<td class="px-6 py-4">#88219/14:02</td>
+<td class="px-6 py-4">STORAGE-B</td>
+<td class="px-6 py-4">THERMAL_FLUCT</td>
+<td class="px-6 py-4">
+<span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-sm text-[10px] uppercase font-bold">Resolved</span>
+</td>
+<td class="px-6 py-4 text-right text-primary">+4.2°C</td>
+</tr>
+<tr class="zebra-row">
+<td class="px-6 py-4">#88214/12:44</td>
+<td class="px-6 py-4">DOCKING-A</td>
+<td class="px-6 py-4">PRESSURE_DROP</td>
+<td class="px-6 py-4">
+<span class="bg-error-container text-on-error-container px-2 py-0.5 rounded-sm text-[10px] uppercase font-bold">Flagged</span>
+</td>
+<td class="px-6 py-4 text-right text-error">-12.8 PSI</td>
+</tr>
+<tr class="zebra-row">
+<td class="px-6 py-4">#88209/09:12</td>
+<td class="px-6 py-4">SERVER-G</td>
+<td class="px-6 py-4">LOAD_SURGE</td>
+<td class="px-6 py-4">
+<span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-sm text-[10px] uppercase font-bold">Resolved</span>
+</td>
+<td class="px-6 py-4 text-right text-primary">88.2%</td>
+</tr>
+<tr class="zebra-row">
+<td class="px-6 py-4">#88201/06:30</td>
+<td class="px-6 py-4">CORE-01</td>
+<td class="px-6 py-4">UPTIME_CHK</td>
+<td class="px-6 py-4">
+<span class="bg-primary text-on-primary px-2 py-0.5 rounded-sm text-[10px] uppercase font-bold">Nominal</span>
+</td>
+<td class="px-6 py-4 text-right text-primary">100.0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Status Cards Cluster -->
+<div class="col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<div class="bg-surface-container-high border border-outline-variant p-4 flex flex-col">
+<span class="font-mono-label text-[10px] text-on-surface-variant uppercase mb-2">Facility Uptime</span>
+<div class="flex items-baseline justify-between">
+<span class="font-mono-data text-headline-sm text-primary">99.82<small class="text-body-md">%</small></span>
+<span class="material-symbols-outlined text-primary">trending_up</span>
+</div>
+<div class="mt-4 h-1 bg-surface-container-highest w-full overflow-hidden">
+<div class="h-full bg-primary w-[99%]" style="box-shadow: 0 0 10px #c3f5ff"></div>
+</div>
+</div>
+<div class="bg-surface-container-high border border-outline-variant p-4 flex flex-col">
+<span class="font-mono-label text-[10px] text-on-surface-variant uppercase mb-2">Incidents Blocked</span>
+<div class="flex items-baseline justify-between">
+<span class="font-mono-data text-headline-sm text-primary">1,402</span>
+<span class="material-symbols-outlined text-primary">security</span>
+</div>
+<div class="mt-4 text-[10px] font-mono-label text-on-surface-variant uppercase">+12% from last month</div>
+</div>
+<div class="bg-surface-container-high border border-outline-variant p-4 flex flex-col">
+<span class="font-mono-label text-[10px] text-on-surface-variant uppercase mb-2">Personnel Risk Score</span>
+<div class="flex items-baseline justify-between">
+<span class="font-mono-data text-headline-sm text-tertiary">LOW</span>
+<span class="material-symbols-outlined text-tertiary">person_search</span>
+</div>
+<div class="mt-4 h-1 bg-surface-container-highest w-full overflow-hidden">
+<div class="h-full bg-tertiary w-[15%]" style="box-shadow: 0 0 10px #ffe7e2"></div>
+</div>
+</div>
+<div class="bg-surface-container-high border border-outline-variant p-4 flex flex-col">
+<span class="font-mono-label text-[10px] text-on-surface-variant uppercase mb-2">AI Optimization</span>
+<div class="flex items-baseline justify-between">
+<span class="font-mono-data text-headline-sm text-primary">0.04<small class="text-body-md">ms</small></span>
+<span class="material-symbols-outlined text-primary">bolt</span>
+</div>
+<div class="mt-4 text-[10px] font-mono-label text-on-surface-variant uppercase">Latency Delta -0.01ms</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Shell (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface-container border-t border-outline-variant flex justify-around items-center h-16 z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-mono-label text-[8px] uppercase mt-1">Dash</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary" href="#">
+<span class="material-symbols-outlined">query_stats</span>
+<span class="font-mono-label text-[8px] uppercase mt-1">Analytics</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">warning</span>
+<span class="font-mono-label text-[8px] uppercase mt-1">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-mono-label text-[8px] uppercase mt-1">Setup</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for hover glow effects on charts
+        document.querySelectorAll('.bg-surface-container-high').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+                card.style.background = `radial-gradient(400px circle at ${x}px ${y}px, rgba(195, 245, 255, 0.03), transparent 40%), #262a31`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.background = `#262a31`;
+            });
+        });
+    </script>
+</body></html>

@@ -1,43 +1,17 @@
 import { useState, useEffect, useCallback } from 'react'
 import { api } from '../lib/api'
+import PermitTable from '../components/permits/PermitTable'
+import AssessmentForm from '../components/permits/AssessmentForm'
 import { MOCK_ALERTS } from '../lib/mockData'
 
-// ─── usePermits hook ──────────────────────────────────────────────────────────
-// INTEGRATION POINT: replace with real API call when endpoint is ready
-// GET /api/permits?status=&permit_type=&limit=50
+const PERMIT_TYPES = [
+  '', 'HOT_WORK', 'CONFINED_SPACE', 'ELECTRICAL',
+  'WORKING_AT_HEIGHT', 'EXCAVATION', 'RADIOGRAPHY', 'CRITICAL_LIFT',
+]
 
-function usePermits(filters = {}) {
-  const [permits, setPermits] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-
-  const fetchPermits = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const params = new URLSearchParams()
-      if (filters.status) params.set('status', filters.status)
-      if (filters.permit_type) params.set('permit_type', filters.permit_type)
-      params.set('limit', filters.limit || 50)
-      const data = await api.get(`/api/permits?${params.toString()}`)
-      setPermits(data?.permits || data || [])
-    } catch (err) {
-      setError(err.message || 'Failed to load permits.')
-      setPermits(MOCK_PERMITS)
-    } finally {
-      setLoading(false)
-    }
-  }, [filters.status, filters.permit_type, filters.limit])
-
-  useEffect(() => {
-    fetchPermits()
-  }, [fetchPermits])
-
-  return { permits, loading, error, refetch: fetchPermits }
-}
+const STATUSES = ['', 'active', 'suspended', 'expired', 'pending', 'revoked']
 
 // ─── Mock permits data ────────────────────────────────────────────────────────
-// INTEGRATION POINT: replace with real API call when endpoint is ready
 const MOCK_PERMITS = [
   {
     permit_uid: 'PTW-2026-0847',
@@ -97,18 +71,36 @@ const MOCK_PERMITS = [
   },
 ]
 
-// ─── Shared sub-components ────────────────────────────────────────────────────
-import PermitTable from '../components/permits/PermitTable'
-import AssessmentForm from '../components/permits/AssessmentForm'
+function usePermits(filters = {}) {
+  const [permits, setPermits] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-const PERMIT_TYPES = [
-  '', 'HOT_WORK', 'CONFINED_SPACE', 'ELECTRICAL',
-  'WORKING_AT_HEIGHT', 'EXCAVATION', 'RADIOGRAPHY', 'CRITICAL_LIFT',
-]
+  const fetchPermits = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const params = new URLSearchParams()
+      if (filters.status) params.set('status', filters.status)
+      if (filters.permit_type) params.set('permit_type', filters.permit_type)
+      params.set('limit', filters.limit || 50)
+      const data = await api.get(`/api/permits?${params.toString()}`)
+      setPermits(data?.permits || data || [])
+    } catch (err) {
+      setError(err.message || 'Failed to load permits.')
+      setPermits(MOCK_PERMITS)
+    } finally {
+      setLoading(false)
+    }
+  }, [filters.status, filters.permit_type, filters.limit])
 
-const STATUSES = ['', 'active', 'suspended', 'expired', 'pending', 'revoked']
+  useEffect(() => {
+    fetchPermits()
+  }, [fetchPermits])
 
-// ─── Permits Page ─────────────────────────────────────────────────────────────
+  return { permits, loading, error, refetch: fetchPermits }
+}
+
 
 export default function Permits() {
   const [filters, setFilters] = useState({ status: '', permit_type: '', limit: 50 })
@@ -120,7 +112,6 @@ export default function Permits() {
   async function handleAction(actionType, permitUid) {
     if (actionType === 'suspend') {
       try {
-        // INTEGRATION POINT: replace with real API call when endpoint is ready
         await api.post(`/api/permits/${permitUid}/suspend`, {})
         refetch()
       } catch (err) {
@@ -130,75 +121,80 @@ export default function Permits() {
   }
 
   function handleAssessmentResult(result) {
-    // Optionally refresh permits after a new assessment leads to a new permit
     refetch()
   }
 
   return (
-    <div className="space-y-4">
-      {/* Header strip */}
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <div className="flex items-center gap-3">
-          <div className="panel px-4 py-2 text-sm text-slate-400">
-            Active:{' '}
-            <span className="font-mono text-emerald-400">{loading ? '—' : activeCount}</span>
+    <div className="flex flex-col h-[calc(100vh-112px)] w-full relative">
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-20">
+        <div className="w-full h-full bg-cover bg-center mix-blend-luminosity bg-[url('https://lh3.googleusercontent.com/aida-public/AB6AXuANv02cV342C7CLpTP0i1MquLmmFbJHbQVMGN5Snr9IZ-c7KoJK6Vo0wTzAnBGLIYwNYbxZXE5d2EFYvrbEYmvnekZDecpwgIpfnqSlkFRf3MW8XusSUPW1a0J5KjA2nnOvTBIrnopmuHlntbxGuEHUOoZpYtp3uoG2wZO60Rookvd5Xw2sRMbFWTUHX8dMQ8DWdquxqxiWi1YLtyfe7KaQyfZkcRzOpFn3oM1e_Vu8uYjrheVNVGtF7Q')]" />
+        <div className="absolute inset-0 bg-background/80" />
+      </div>
+
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4 relative z-10 border-l-2 border-primary pl-4">
+        <div>
+          <h1 className="font-display text-3xl font-bold text-primary uppercase tracking-tighter">Permit To Work</h1>
+          <p className="font-mono text-[11px] font-bold tracking-widest text-on-surface-variant uppercase mt-1">Zone Control & Safety Clearances</p>
+        </div>
+      </div>
+
+      <div className="flex flex-col h-full gap-6 relative z-10 flex-1 min-h-0 overflow-y-auto no-scrollbar pb-6">
+        <div className="flex items-center justify-between flex-wrap gap-4 bg-surface-container border border-outline-variant p-4">
+          <div className="flex items-center gap-6">
+            <div className="flex flex-col">
+              <span className="font-mono text-[9px] font-bold tracking-widest text-on-surface-variant uppercase">Active Permits</span>
+              <span className="font-mono text-primary font-bold text-lg">{loading ? '—' : activeCount}</span>
+            </div>
+            <div className="flex flex-col border-l border-outline-variant pl-6">
+              <span className="font-mono text-[9px] font-bold tracking-widest text-on-surface-variant uppercase">Conflicts</span>
+              <span className={conflictCount > 0 ? "font-mono text-error font-bold text-lg flash-warn" : "font-mono text-on-surface-variant font-bold text-lg"}>
+                {loading ? '—' : conflictCount}
+              </span>
+            </div>
           </div>
-          <div className="panel px-4 py-2 text-sm text-slate-400">
-            Conflicts:{' '}
-            <span
-              className={
-                conflictCount > 0
-                  ? 'font-mono text-amber-400 flash-warn'
-                  : 'font-mono text-slate-400'
-              }
+
+          <div className="flex gap-4 flex-wrap">
+            <select
+              value={filters.status}
+              onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value }))}
+              className="appearance-none bg-[#0a0a0a] border border-primary/50 text-primary text-xs font-mono py-2 px-4 focus:outline-none focus:border-primary cursor-pointer"
             >
-              {loading ? '—' : conflictCount}
-            </span>
+              <option value="">ALL STATUSES</option>
+              {STATUSES.filter(Boolean).map((s) => (
+                <option key={s} value={s}>
+                  {s.toUpperCase()}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={filters.permit_type}
+              onChange={(e) => setFilters((f) => ({ ...f, permit_type: e.target.value }))}
+              className="appearance-none bg-[#0a0a0a] border border-primary/50 text-primary text-xs font-mono py-2 px-4 focus:outline-none focus:border-primary cursor-pointer"
+            >
+              <option value="">ALL TYPES</option>
+              {PERMIT_TYPES.filter(Boolean).map((t) => (
+                <option key={t} value={t}>
+                  {t.replace(/_/g, ' ')}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="flex gap-2 flex-wrap">
-          <select
-            value={filters.status}
-            onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value }))}
-            className="select-field text-xs py-1.5 px-2"
-          >
-            <option value="">All Statuses</option>
-            {STATUSES.filter(Boolean).map((s) => (
-              <option key={s} value={s}>
-                {s.charAt(0).toUpperCase() + s.slice(1)}
-              </option>
-            ))}
-          </select>
+        <div className="bg-surface-container border border-outline-variant overflow-hidden p-0">
+          <PermitTable
+            permits={permits}
+            loading={loading}
+            error={error}
+            onAction={handleAction}
+          />
+        </div>
 
-          <select
-            value={filters.permit_type}
-            onChange={(e) => setFilters((f) => ({ ...f, permit_type: e.target.value }))}
-            className="select-field text-xs py-1.5 px-2"
-          >
-            <option value="">All Types</option>
-            {PERMIT_TYPES.filter(Boolean).map((t) => (
-              <option key={t} value={t}>
-                {t.replace(/_/g, ' ')}
-              </option>
-            ))}
-          </select>
+        <div className="bg-surface-container border border-outline-variant">
+          <AssessmentForm onResult={handleAssessmentResult} />
         </div>
       </div>
-
-      {/* Table */}
-      <div className="panel overflow-hidden">
-        <PermitTable
-          permits={permits}
-          loading={loading}
-          error={error}
-          onAction={handleAction}
-        />
-      </div>
-
-      {/* Assessment form */}
-      <AssessmentForm onResult={handleAssessmentResult} />
     </div>
   )
 }

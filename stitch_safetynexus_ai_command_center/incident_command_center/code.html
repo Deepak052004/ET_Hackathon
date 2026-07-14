@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Incident Management | SafetyNexus AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glow-primary {
+            box-shadow: 0 0 10px rgba(195, 245, 255, 0.3);
+        }
+        .glow-error {
+            box-shadow: 0 0 12px rgba(255, 180, 171, 0.4);
+        }
+        .inset-panel {
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #10141a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b494c;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #849396;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#343d96",
+                        "background": "#10141a",
+                        "primary": "#c3f5ff",
+                        "secondary-fixed-dim": "#bdc2ff",
+                        "surface-container": "#1c2026",
+                        "outline": "#849396",
+                        "on-secondary": "#1b247f",
+                        "tertiary-container": "#ffc2b3",
+                        "surface-container-low": "#181c22",
+                        "on-surface": "#dfe2eb",
+                        "on-primary": "#00363d",
+                        "primary-fixed-dim": "#00daf3",
+                        "on-tertiary": "#621100",
+                        "tertiary": "#ffe7e2",
+                        "surface-bright": "#353940",
+                        "on-primary-fixed": "#001f24",
+                        "secondary-fixed": "#e0e0ff",
+                        "primary-fixed": "#9cf0ff",
+                        "surface-variant": "#31353c",
+                        "on-secondary-container": "#a8afff",
+                        "surface-dim": "#10141a",
+                        "on-surface-variant": "#bac9cc",
+                        "outline-variant": "#3b494c",
+                        "surface-container-highest": "#31353c",
+                        "on-tertiary-fixed": "#3c0700",
+                        "error": "#ffb4ab",
+                        "surface-container-lowest": "#0a0e14",
+                        "surface": "#10141a",
+                        "inverse-on-surface": "#2d3137",
+                        "surface-container-high": "#262a31",
+                        "on-tertiary-container": "#aa2600",
+                        "on-error": "#690005",
+                        "on-primary-fixed-variant": "#004f58",
+                        "tertiary-fixed": "#ffdad2",
+                        "on-secondary-fixed": "#000767",
+                        "tertiary-fixed-dim": "#ffb4a2",
+                        "inverse-surface": "#dfe2eb",
+                        "on-error-container": "#ffdad6",
+                        "inverse-primary": "#006875",
+                        "on-primary-container": "#00626e",
+                        "on-background": "#dfe2eb",
+                        "error-container": "#93000a",
+                        "secondary": "#bdc2ff",
+                        "on-tertiary-fixed-variant": "#8a1d00",
+                        "on-secondary-fixed-variant": "#343d96",
+                        "surface-tint": "#00daf3",
+                        "primary-container": "#00e5ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "32px",
+                        "unit": "4px",
+                        "container-max": "1440px"
+                    },
+                    "fontFamily": {
+                        "mono-data": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Chakra Petch"],
+                        "body-lg": ["Inter"],
+                        "mono-label": ["JetBrains Mono"],
+                        "headline-md": ["Chakra Petch"],
+                        "headline-sm": ["Chakra Petch"],
+                        "headline-lg": ["Chakra Petch"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "mono-data": ["14px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                        "mono-label": ["11px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "headline-md": ["32px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "headline-sm": ["20px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 h-16 bg-surface-container border-b border-outline-variant flex justify-between items-center px-margin-desktop">
+<div class="flex items-center gap-8">
+<span class="font-headline-sm text-headline-sm font-bold text-primary tracking-tight">SafetyNexus AI</span>
+<div class="hidden md:flex gap-6 items-center h-full">
+<a class="h-full flex items-center px-2 text-on-surface-variant font-mono-label text-mono-label hover:bg-surface-bright transition-colors uppercase" href="#">Network Status: <span class="ml-2 text-primary">Secure</span></a>
+<a class="h-full flex items-center px-2 text-primary border-b-2 border-primary font-mono-label text-mono-label uppercase" href="#">Incident Protocol</a>
+<a class="h-full flex items-center px-2 text-on-surface-variant font-mono-label text-mono-label hover:bg-surface-bright transition-colors uppercase" href="#">Asset Map</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex gap-2 mr-4">
+<button class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined">notifications_active</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined text-primary">terminal</span>
+</button>
+</div>
+<button class="bg-primary text-on-primary px-4 py-2 font-mono-label text-mono-label uppercase tracking-widest active:scale-95 transition-transform duration-150">System Check</button>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 bg-surface-container-low border-r border-outline-variant flex flex-col py-4 gap-2 hidden md:flex">
+<div class="px-6 mb-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-outline-variant rounded-sm flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a technical safety director wearing a dark grey uniform against a high-contrast industrial backdrop. The lighting is sharp, emphasizing a serious, focused expression. The overall style is modern corporate industrial with cool color tones and crisp edges." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC00pfhjXLx7ccmJbZFFfiEJxj6NnMtBPLRhHSkgsQuK7sn_n7o4kLd0OVhDe-G8QwXL31adhoIg5h_oqIiXLuKiZRHcIqYrPXdGMJLwqX1PhYb8W7Q1H6qe_nhTq6p6jBwWoM8fWtxBadcdFA2HRc5tY7u0X84Vl5-TCod0hBK8-OyrGKbcFDByRknlgEZwSSSIMMrMGbpK94QOfu5oDSRhtHAgLuA_Nwf7gwIFrzNVURMo6RgGvcv5g"/>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-primary leading-none">Command Center</p>
+<p class="font-mono-label text-[10px] text-on-surface-variant uppercase tracking-tighter">Sector 7G - Active</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant font-mono-label text-mono-label hover:bg-surface-container-high group transition-all" href="#">
+<span class="material-symbols-outlined text-xl">dashboard</span> DASHBOARD
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant font-mono-label text-mono-label hover:bg-surface-container-high group transition-all" href="#">
+<span class="material-symbols-outlined text-xl">bia</span> TELEMETRY
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant font-mono-label text-mono-label hover:bg-surface-container-high group transition-all" href="#">
+<span class="material-symbols-outlined text-xl">map</span> ZONES
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 bg-secondary-container text-on-secondary-container border-l-4 border-primary font-mono-label text-mono-label transition-all active:translate-x-1" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">warning</span> INCIDENTS
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant font-mono-label text-mono-label hover:bg-surface-container-high group transition-all" href="#">
+<span class="material-symbols-outlined text-xl">query_stats</span> ANALYTICS
+            </a>
+</nav>
+<div class="mt-auto px-4 space-y-1">
+<button class="w-full bg-error-container text-on-error-container py-3 px-4 font-mono-label text-mono-label uppercase tracking-widest border border-error/20 flex items-center justify-center gap-2 mb-4">
+<span class="material-symbols-outlined text-lg">emergency_home</span> Emergency Stop
+            </button>
+<a class="flex items-center gap-3 px-2 py-2 text-on-surface-variant font-mono-label text-mono-label hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">help</span> SUPPORT
+            </a>
+<a class="flex items-center gap-3 px-2 py-2 text-on-surface-variant font-mono-label text-mono-label hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">history</span> LOGS
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-0 md:ml-64 mt-16 p-6 h-[calc(100vh-64px)] overflow-y-auto scroll-smooth">
+<div class="max-w-container-max mx-auto">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-end mb-8 gap-4 border-l-2 border-primary pl-4">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-primary uppercase tracking-tight">Incident Management</h1>
+<p class="font-mono-label text-mono-label text-on-surface-variant">OPERATOR: SYS_ADMIN_01 // TIMESTAMP: 2024-05-24 14:22:01</p>
+</div>
+<div class="flex gap-2">
+<div class="px-4 py-2 border border-outline-variant bg-surface-container-high flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary-container animate-pulse"></span>
+<span class="font-mono-label text-mono-label uppercase">3 Active Anomalies</span>
+</div>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Active Alerts Queue (Column 1-4) -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-gutter">
+<section class="bg-surface-container p-4 border border-outline-variant flex flex-col h-full inset-panel">
+<div class="flex justify-between items-center mb-4 border-b border-outline-variant pb-2">
+<h2 class="font-mono-label text-mono-label text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">list_alt</span> ACTIVE ALERTS QUEUE
+                            </h2>
+<span class="font-mono-data text-mono-data text-on-surface-variant">[03]</span>
+</div>
+<div class="space-y-3 overflow-y-auto max-h-[600px] pr-2">
+<!-- Critical Alert -->
+<div class="bg-error-container/20 border-l-4 border-error p-3 group hover:bg-error-container/30 transition-all cursor-pointer glow-error">
+<div class="flex justify-between items-start mb-1">
+<span class="bg-error text-on-error font-mono-label text-[10px] px-1.5 py-0.5 uppercase">Critical</span>
+<span class="font-mono-data text-[11px] text-on-error-container">14:19:05</span>
+</div>
+<h3 class="font-headline-sm text-[16px] text-error mb-1">Turbine A-4 Vibration Spike</h3>
+<p class="text-body-md text-on-surface-variant leading-tight mb-2">Measured vibration: 12.2 IPS. Threshold exceeded by 45%.</p>
+<div class="flex gap-2">
+<button class="bg-error text-on-error font-mono-label text-[10px] py-1 px-3 uppercase hover:brightness-110">Acknowledge</button>
+<button class="border border-error text-error font-mono-label text-[10px] py-1 px-3 uppercase hover:bg-error/10">Details</button>
+</div>
+</div>
+<!-- Warning Alert -->
+<div class="bg-tertiary-container/10 border-l-4 border-tertiary-container p-3 hover:bg-tertiary-container/20 transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="bg-tertiary-container text-on-tertiary-container font-mono-label text-[10px] px-1.5 py-0.5 uppercase">Warning</span>
+<span class="font-mono-data text-[11px] text-on-surface-variant">14:15:22</span>
+</div>
+<h3 class="font-headline-sm text-[16px] text-tertiary-container mb-1">Zone 4 Pressure Variance</h3>
+<p class="text-body-md text-on-surface-variant leading-tight">Flow pressure fluctuating ±12 PSI in secondary loop.</p>
+</div>
+<!-- Info Alert -->
+<div class="bg-surface-container-high border-l-4 border-outline p-3 hover:bg-surface-bright transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="bg-outline text-background font-mono-label text-[10px] px-1.5 py-0.5 uppercase">Notice</span>
+<span class="font-mono-data text-[11px] text-on-surface-variant">14:02:44</span>
+</div>
+<h3 class="font-headline-sm text-[16px] text-on-surface mb-1">Bio-Metric Auth Bypass</h3>
+<p class="text-body-md text-on-surface-variant leading-tight">Emergency override key used at Exit 14-B.</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Incident Context & Timeline (Column 5-12) -->
+<div class="col-span-12 lg:col-span-8 flex flex-col gap-gutter">
+<!-- High Fidelity Image Card -->
+<div class="relative h-[400px] bg-surface-container-lowest border border-outline-variant overflow-hidden group">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="A macro cinematic shot of a heavy industrial water pump system in a clean, dark-mode facility. Glowing digital sensors are mounted on the metal casing, displaying neon red warning numbers like '12.2 IPS'. The lighting is Moody Mission Control Blue with sharp metallic reflections and high-precision detail. Shallow depth of field focuses on the 'Critical' telemetry readout." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCFowSwQ3-TUC0HD0uzXwR8fusOnP-Bsy3YQj7pn9qjOx-6UwChwXofhUxIJ5K3H1RgfgITUo6QGq0K3tT7yfJSkleh21OkhIIJ-IbNw53FJ5bG_CfXYRNliX0wdQLdXRiuoU5Rp3JFQ-SUcfFIZGTqADxrR81FXqPY_7YS9txfx14WbalZeWrX2Ih-EEmPy7g0-e8Ghfsji7hcso-V61dcMay1iQOJNmjD3cz5TYs11gzYYE0aRg-I4g')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute top-6 left-6 flex flex-col gap-2">
+<span class="bg-error text-on-error font-mono-label text-mono-label px-3 py-1 uppercase tracking-widest flex items-center gap-2 shadow-xl">
+<span class="material-symbols-outlined text-lg animate-pulse">report</span> LIVE ANOMALY DETECTED
+                            </span>
+<div class="bg-background/80 backdrop-blur-md border border-outline-variant p-2 font-mono-data text-[12px] text-primary">
+                                CAM_SOURCE: SECTOR_7G_PUMP_04 // ZOOM_LVL: 1.5x
+                            </div>
+</div>
+<div class="absolute bottom-6 left-6 right-6 flex items-end justify-between">
+<div class="bg-background/90 p-4 border border-outline-variant max-w-sm">
+<p class="font-mono-label text-[10px] text-on-surface-variant uppercase mb-1">Telemetry Summary</p>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<p class="font-mono-data text-headline-sm text-error">12.2 <span class="text-xs">IPS</span></p>
+<p class="font-mono-label text-[10px] text-on-surface-variant">VIBRATION</p>
+</div>
+<div>
+<p class="font-mono-data text-headline-sm text-on-surface">144.5 <span class="text-xs">°F</span></p>
+<p class="font-mono-label text-[10px] text-on-surface-variant">CORE TEMP</p>
+</div>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="w-12 h-12 bg-primary text-on-primary flex items-center justify-center hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined">zoom_in</span>
+</button>
+<button class="w-12 h-12 bg-surface-container-high text-on-surface flex items-center justify-center border border-outline-variant hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined">videocam</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Bottom Row: Timeline & Protocol -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Incident Timeline -->
+<div class="bg-surface-container p-4 border border-outline-variant inset-panel">
+<h2 class="font-mono-label text-mono-label text-primary mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">history_edu</span> INCIDENT TIMELINE
+                            </h2>
+<div class="space-y-4 relative before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-outline-variant">
+<div class="relative pl-8">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-error border-4 border-background"></div>
+<p class="font-mono-data text-[12px] text-error">14:19:05</p>
+<p class="text-body-md text-on-surface font-semibold">Critical Alarm Triggered</p>
+<p class="text-body-md text-on-surface-variant text-xs">Vibration threshold exceeded safety parameters for Pump 04.</p>
+</div>
+<div class="relative pl-8">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-secondary-container border-4 border-background"></div>
+<p class="font-mono-data text-[12px] text-on-surface-variant">14:19:44</p>
+<p class="text-body-md text-on-surface">Auto-Bypass Initiated</p>
+<p class="text-body-md text-on-surface-variant text-xs">Secondary cooling loop opened to mitigate thermal buildup.</p>
+</div>
+<div class="relative pl-8 opacity-50">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-outline-variant border-4 border-background"></div>
+<p class="font-mono-data text-[12px] text-on-surface-variant">Pending</p>
+<p class="text-body-md text-on-surface italic">Operator Intervention Required</p>
+</div>
+</div>
+</div>
+<!-- Response Protocol -->
+<div class="bg-surface-container p-4 border border-outline-variant inset-panel">
+<h2 class="font-mono-label text-mono-label text-primary mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">task_alt</span> RESPONSE PROTOCOL 04-A
+                            </h2>
+<div class="space-y-2">
+<label class="flex items-center gap-3 p-2 bg-surface-container-high border border-outline-variant cursor-pointer hover:bg-surface-bright group">
+<input checked="" class="form-checkbox bg-transparent border-primary text-primary focus:ring-0" type="checkbox"/>
+<span class="font-mono-label text-[12px] text-on-surface group-hover:text-primary transition-colors">1. VERIFY TELEMETRY SENSOR ACCURACY</span>
+<span class="material-symbols-outlined ml-auto text-primary text-lg">done_all</span>
+</label>
+<label class="flex items-center gap-3 p-2 bg-surface-container-high border border-outline-variant cursor-pointer hover:bg-surface-bright group">
+<input class="form-checkbox bg-transparent border-primary text-primary focus:ring-0" type="checkbox"/>
+<span class="font-mono-label text-[12px] text-on-surface group-hover:text-primary transition-colors">2. INITIATE REMOTE COOLANT PURGE</span>
+</label>
+<label class="flex items-center gap-3 p-2 bg-surface-container-high border border-outline-variant cursor-pointer hover:bg-surface-bright group">
+<input class="form-checkbox bg-transparent border-primary text-primary focus:ring-0" type="checkbox"/>
+<span class="font-mono-label text-[12px] text-on-surface group-hover:text-primary transition-colors">3. DEPLOY ON-SITE INSPECTION UNIT</span>
+</label>
+<label class="flex items-center gap-3 p-2 bg-surface-container-high border border-outline-variant cursor-pointer hover:bg-surface-bright group">
+<input class="form-checkbox bg-transparent border-primary text-primary focus:ring-0" type="checkbox"/>
+<span class="font-mono-label text-[12px] text-on-surface group-hover:text-primary transition-colors">4. EVACUATE SECTOR 7 (NON-ESSENTIAL)</span>
+</label>
+</div>
+<button class="w-full mt-4 bg-primary text-on-primary py-3 font-mono-label text-mono-label uppercase tracking-widest glow-primary active:translate-y-1 transition-all">Execute Sequence</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Telemetry Strip (Bottom Row) -->
+<div class="mt-gutter grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+<div class="bg-surface-container-low border border-outline-variant p-3 flex flex-col">
+<p class="font-mono-label text-[10px] text-on-surface-variant uppercase">CPU Load</p>
+<div class="flex items-baseline gap-2">
+<span class="font-mono-data text-xl text-primary">12.4%</span>
+<span class="w-full h-1 bg-outline-variant rounded-full overflow-hidden">
+<span class="block h-full bg-primary" style="width: 12.4%"></span>
+</span>
+</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant p-3 flex flex-col">
+<p class="font-mono-label text-[10px] text-on-surface-variant uppercase">Memory Usage</p>
+<div class="flex items-baseline gap-2">
+<span class="font-mono-data text-xl text-primary">44.1GB</span>
+</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant p-3 flex flex-col">
+<p class="font-mono-label text-[10px] text-on-surface-variant uppercase">Network I/O</p>
+<div class="flex items-baseline gap-2">
+<span class="font-mono-data text-xl text-primary">1.2GB/s</span>
+</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant p-3 flex flex-col border-l-4 border-tertiary-container">
+<p class="font-mono-label text-[10px] text-tertiary-container uppercase">Latent Heat</p>
+<div class="flex items-baseline gap-2">
+<span class="font-mono-data text-xl text-tertiary-container">184°K</span>
+</div>
+</div>
+<div class="hidden lg:flex bg-surface-container-low border border-outline-variant p-3 flex-col">
+<p class="font-mono-label text-[10px] text-on-surface-variant uppercase">Active Drones</p>
+<div class="flex items-baseline gap-2">
+<span class="font-mono-data text-xl text-on-surface">08/12</span>
+</div>
+</div>
+<div class="hidden lg:flex bg-surface-container-low border border-outline-variant p-3 flex-col">
+<p class="font-mono-label text-[10px] text-on-surface-variant uppercase">Uptime</p>
+<div class="flex items-baseline gap-2">
+<span class="font-mono-data text-xl text-on-surface">144:12:05</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Visual Polish: Grid Overlay -->
+<div class="fixed inset-0 pointer-events-none z-[-1] opacity-5">
+<div class="w-full h-full" style="background-image: linear-gradient(#c3f5ff 1px, transparent 1px), linear-gradient(90deg, #c3f5ff 1px, transparent 1px); background-size: 40px 40px;"></div>
+</div>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const parent = e.target.closest('label');
+                if(e.target.checked) {
+                    parent.classList.add('opacity-50');
+                    parent.style.textDecoration = 'line-through';
+                } else {
+                    parent.classList.remove('opacity-50');
+                    parent.style.textDecoration = 'none';
+                }
+            });
+        });
+
+        // Simulating telemetry flickering for atmospheric effect
+        setInterval(() => {
+            const dataValues = document.querySelectorAll('.font-mono-data');
+            dataValues.forEach(el => {
+                if(Math.random() > 0.95) {
+                    el.style.opacity = '0.5';
+                    setTimeout(() => el.style.opacity = '1', 100);
+                }
+            });
+        }, 500);
+    </script>
+</body></html>
